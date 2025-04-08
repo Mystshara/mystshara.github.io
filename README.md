@@ -23,12 +23,13 @@ It showcases my current projects, technical skills, and resume for hiring manage
 ---
 
 ### 💡 Coming Soon
-- React + Tailwind redesign
+- React 
 - Project cards with GitHub and demo links
 - Blog-style posts about my security automation journey
 
 ---
 
 > Want to work together or learn more?  
-Reach me at: [b_l_turner@yahoo.com](mailto:b_l_turner@yahoo.com)  
-Or visit: [github.com/Mystshara](https://github.com/Mystshara)
+📫 Reach me at: [b_l_turner@yahoo.com](mailto:b_l_turner@yahoo.com)  
+🔗 Connect on [LinkedIn](https://www.linkedin.com/in/rebecca-turner-81377598/)  
+🌐 Or visit: [github.com/Mystshara](https://github.com/Mystshara)
