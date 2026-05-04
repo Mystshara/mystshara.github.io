@@ -551,7 +551,7 @@ export default function CaseStudyPage() {
                 {showScreenshots ? (
                     <Section title="Screenshots & visuals" darkMode={darkMode}>
                         <p style={{ margin: '0 0 1rem', color: muted }}>
-                            Placeholder imagery for layout. Replace with product screenshots, Grafana boards, Terraform plans, or architecture exports.
+                            Captures from the public product or related surfaces referenced in this write-up.
                         </p>
                         <div
                             style={{
@@ -570,7 +570,17 @@ export default function CaseStudyPage() {
                                         background: surface
                                     }}
                                 >
-                                    <img src={src} alt={`${project.title} visual ${i + 1}`} style={{ width: '100%', height: '160px', objectFit: 'cover', display: 'block' }} />
+                                    <img
+                                        src={src}
+                                        alt={`${project.title} screenshot ${i + 1}`}
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            maxHeight: 'min(560px, 78vh)',
+                                            objectFit: 'contain',
+                                            display: 'block'
+                                        }}
+                                    />
                                 </div>
                             ))}
                         </div>

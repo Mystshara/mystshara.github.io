@@ -34,6 +34,9 @@ function projectVisual(slug, darkMode) {
     const themes = {
         statforge: {
             heroOverlay: 'linear-gradient(135deg, rgba(124,58,237,0.52) 0%, rgba(59,130,246,0.45) 100%)',
+            /** When a real screenshot is shown: light tie-in + bottom scrim for badges (not a full wash). */
+            heroImageOverlay:
+                'linear-gradient(180deg, rgba(124,58,237,0.12) 0%, transparent 42%, rgba(2,6,23,0.55) 100%)',
             borderFeatured: darkMode ? '1px solid rgba(167, 139, 250, 0.5)' : '1px solid rgba(99, 102, 241, 0.35)',
             borderStandard: darkMode ? '1px solid rgba(129, 140, 248, 0.32)' : '1px solid rgba(199, 210, 254, 0.95)',
             featuredShadow: E.featuredRest,
@@ -50,6 +53,8 @@ function projectVisual(slug, darkMode) {
         },
         'fiber-hosting': {
             heroOverlay: 'linear-gradient(135deg, rgba(51,65,85,0.78) 0%, rgba(14,165,233,0.42) 100%)',
+            heroImageOverlay:
+                'linear-gradient(180deg, rgba(14,165,233,0.1) 0%, transparent 42%, rgba(2,6,23,0.52) 100%)',
             borderFeatured: darkMode ? '1px solid rgba(56, 189, 248, 0.42)' : '1px solid rgba(14, 116, 144, 0.35)',
             borderStandard: darkMode ? '1px solid rgba(100, 116, 139, 0.55)' : '1px solid rgba(148, 163, 184, 0.65)',
             featuredShadow: E.featuredRest,
@@ -66,6 +71,8 @@ function projectVisual(slug, darkMode) {
         },
         'ai-lead-generation': {
             heroOverlay: 'linear-gradient(135deg, rgba(5,150,105,0.55) 0%, rgba(217,119,6,0.42) 100%)',
+            heroImageOverlay:
+                'linear-gradient(180deg, rgba(5,150,105,0.08) 0%, transparent 42%, rgba(2,6,23,0.55) 100%)',
             borderFeatured: darkMode ? '1px solid rgba(52, 211, 153, 0.45)' : '1px solid rgba(5, 150, 105, 0.35)',
             borderStandard: darkMode ? '1px solid rgba(245, 158, 11, 0.28)' : '1px solid rgba(251, 191, 36, 0.55)',
             featuredShadow: E.featuredRest,
@@ -82,6 +89,8 @@ function projectVisual(slug, darkMode) {
         },
         'security-automation-platform': {
             heroOverlay: 'linear-gradient(135deg, rgba(220,38,38,0.42) 0%, rgba(124,58,237,0.48) 100%)',
+            heroImageOverlay:
+                'linear-gradient(180deg, rgba(220,38,38,0.08) 0%, transparent 42%, rgba(2,6,23,0.52) 100%)',
             borderFeatured: darkMode ? '1px solid rgba(248, 113, 113, 0.42)' : '1px solid rgba(190, 24, 93, 0.32)',
             borderStandard: darkMode ? '1px solid rgba(192, 132, 252, 0.35)' : '1px solid rgba(167, 139, 250, 0.45)',
             featuredShadow: E.featuredRest,
@@ -129,31 +138,58 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
     const bodyColor = darkMode ? '#e2e8f0' : '#475569';
     const chipBg = darkMode ? 'rgba(51, 65, 85, 0.85)' : '#f1f5f9';
     const chipBorder = darkMode ? '#475569' : '#e2e8f0';
-    const heroBg = project.image ? `${visual.heroOverlay}, url(${project.image})` : visual.heroOverlay;
+    const hasHeroImage = Boolean(project.image);
+    const heroOverlayCss = hasHeroImage && visual.heroImageOverlay ? visual.heroImageOverlay : visual.heroOverlay;
 
     const heroTop = (
         <>
+            {hasHeroImage ? (
+                <img
+                    src={project.image}
+                    alt=""
+                    role="presentation"
+                    decoding="async"
+                    loading={featured ? 'eager' : 'lazy'}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                        e.currentTarget.removeAttribute('src');
+                        e.currentTarget.style.display = 'none';
+                    }}
+                    style={{
+                        position: 'absolute',
+                        inset: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center top',
+                        display: 'block'
+                    }}
+                />
+            ) : null}
             <div
+                aria-hidden
                 style={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundImage: heroBg,
+                    backgroundImage: heroOverlayCss,
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center top'
+                    backgroundPosition: 'center'
                 }}
             />
-            <span
-                style={{
-                    position: 'absolute',
-                    top: '1.1rem',
-                    left: '1.1rem',
-                    zIndex: 2,
-                    fontSize: featured ? '3rem' : '2.35rem',
-                    filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.4))'
-                }}
-            >
-                {project.icon}
-            </span>
+            {!hasHeroImage ? (
+                <span
+                    style={{
+                        position: 'absolute',
+                        top: '1.1rem',
+                        left: '1.1rem',
+                        zIndex: 2,
+                        fontSize: featured ? '3rem' : '2.35rem',
+                        filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.4))'
+                    }}
+                >
+                    {project.icon}
+                </span>
+            ) : null}
             <div
                 style={{
                     position: 'absolute',

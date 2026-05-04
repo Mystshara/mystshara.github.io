@@ -2,12 +2,20 @@
  * Work index + case study copy. Replace URLs, metrics, and product names where you want tighter accuracy.
  */
 
-/** Remote full-page capture for card heroes (falls back if thum.io is unavailable). */
+/**
+ * Remote thumbnail URL (thum.io). Fine for optional `<img src>` with `onError` handling;
+ * avoid relying on it as the only hero art — prefer bundled assets via `new URL(..., import.meta.url)`.
+ */
 export function liveSitePreview(url) {
     if (!url) return '';
     const u = url.trim();
     return `https://image.thum.io/get/width/1280/crop/720/noanimate/${encodeURIComponent(u)}`;
 }
+
+/** Bundled case-study assets (paths relative to this file). */
+const statforgeLifecycleShot = new URL('../images/statforge lifecycle.png', import.meta.url).href;
+const leadConsoleHeroShot = new URL('../images/leadgen.png', import.meta.url).href;
+const fiberHostingHeroShot = new URL('../images/fiberhosting.png', import.meta.url).href;
 
 export const BADGE_STYLES = {
     Platform: { bg: '#7c3aed', fg: '#f5f3ff' },
@@ -36,10 +44,11 @@ export const WORK_PROJECTS = [
             'Public API design (read model contract)',
             'Review workflows (verification system)'
         ],
-        image: liveSitePreview('https://stat-forge.fiberhostingservices.com/'),
+        /* Bundled asset: thum.io previews often fail as CSS backgrounds in dev/production. */
+        image: statforgeLifecycleShot,
         demoLink: 'https://stat-forge.fiberhostingservices.com/',
         repoLink: null,
-        screenshots: [],
+        screenshots: [statforgeLifecycleShot],
         caseStudy: {
             summary:
                 'StatForge is a clean external product: verified match outcomes your integrations can rely on. Under that surface is the platform work that makes “one match, one record, one version of truth” real: schema evolution, auth boundaries, background processing, and review workflows that stay coherent as the product grows.',
@@ -60,7 +69,7 @@ export const WORK_PROJECTS = [
             ],
             pullQuote:
                 'The engineering-heavy pieces in this stack — queues, migrations, permissions, performance — exist to protect that contract under real traffic and real operators.',
-            hideScreenshots: true,
+            hideScreenshots: false,
             showStatForgeLifecycle: true,
             architecture: `Integrators (apps, sites, partners)
         │
@@ -118,11 +127,11 @@ export const WORK_PROJECTS = [
             'Control-plane thinking on real metal and clusters: provisioning, networking edges, and operational guardrails for customer-facing hosting workloads.',
         icon: '⚡',
         tech: ['Proxmox', 'Kubernetes', 'Docker', 'NGINX', 'Terraform', 'Linux'],
-        image: liveSitePreview('https://fiberhostingservices.com/'),
+        image: fiberHostingHeroShot,
         demoLink: 'https://fiberhostingservices.com/',
         repoLink: 'https://github.com/Mystshara/web-game-hosting-demo',
         screenshots: [
-            liveSitePreview('https://fiberhostingservices.com/'),
+            fiberHostingHeroShot,
             'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
             'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1200&h=600&fit=crop'
         ],
@@ -175,11 +184,11 @@ export const WORK_PROJECTS = [
             'Production SaaS workflow for lead intake, evaluation, and handoff: cost controls, durable jobs, and UX that turns model-assisted output into something sales can act on.',
         icon: '🎯',
         tech: ['Python', 'LLM APIs', 'PostgreSQL', 'Background jobs', 'Product UX'],
-        image: liveSitePreview('https://lead.fiberhostingservices.com/'),
+        image: leadConsoleHeroShot,
         demoLink: 'https://lead.fiberhostingservices.com/',
         repoLink: null,
         screenshots: [
-            liveSitePreview('https://lead.fiberhostingservices.com/'),
+            leadConsoleHeroShot,
             'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=600&fit=crop',
             'https://images.unsplash.com/photo-1504639725590-04d09842dc99?w=1200&h=600&fit=crop'
         ],
