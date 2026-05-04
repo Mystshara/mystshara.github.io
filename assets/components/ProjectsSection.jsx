@@ -299,7 +299,7 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                                     background: chipBg,
                                     color: titleColor,
                                     borderRadius: '8px',
-                                    fontSize: '0.76rem',
+                                    fontSize: '0.7rem',
                                     fontWeight: 600,
                                     border: `1px solid ${chipBorder}`
                                 }}

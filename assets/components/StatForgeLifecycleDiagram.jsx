@@ -17,16 +17,16 @@ const PHASES = [
 
 export default function StatForgeLifecycleDiagram({ darkMode }) {
     const mid = `sf-life-${useId().replace(/:/g, '')}`;
-    const accent = darkMode ? '#a78bfa' : '#7c3aed';
-    const stroke = darkMode ? 'rgba(167, 139, 250, 0.75)' : 'rgba(124, 58, 237, 0.55)';
+    const accent = darkMode ? '#9d8ae8' : '#6d28d9';
+    const stroke = darkMode ? 'rgba(167, 139, 250, 0.48)' : 'rgba(124, 58, 237, 0.42)';
     const fill = darkMode ? 'rgba(15, 23, 42, 0.9)' : '#ffffff';
     const text = darkMode ? '#e2e8f0' : '#0f172a';
-    const sub = darkMode ? '#94a3b8' : '#64748b';
+    const sub = darkMode ? '#cbd5e1' : '#64748b';
 
     const w = 720;
-    const h = 118;
+    const h = 124;
     const boxW = 88;
-    const boxH = 56;
+    const boxH = 60;
     const gap = 10;
     const startX = 16;
     const y = 32;
@@ -39,9 +39,9 @@ export default function StatForgeLifecycleDiagram({ darkMode }) {
                 overflowX: 'auto',
                 marginTop: '0.5rem',
                 borderRadius: '14px',
-                padding: '1rem 0.75rem',
-                background: darkMode ? 'rgba(2, 6, 23, 0.55)' : '#f8fafc',
-                border: darkMode ? '1px solid #334155' : '1px solid #e2e8f0'
+                padding: '1.35rem 1rem 1.45rem',
+                background: darkMode ? 'rgba(2, 6, 23, 0.45)' : '#f8fafc',
+                border: darkMode ? '1px solid rgba(51, 65, 85, 0.75)' : '1px solid #e2e8f0'
             }}
         >
             <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{ minWidth: w, display: 'block' }} aria-hidden>
@@ -61,7 +61,7 @@ export default function StatForgeLifecycleDiagram({ darkMode }) {
                             x2={x2}
                             y2={y + boxH / 2}
                             stroke={stroke}
-                            strokeWidth="2"
+                            strokeWidth="1.45"
                             strokeLinecap="round"
                             markerEnd={`url(#${mid})`}
                             strokeDasharray="4 6"
@@ -75,7 +75,7 @@ export default function StatForgeLifecycleDiagram({ darkMode }) {
                     const x = xs[i];
                     return (
                         <g key={ph.title}>
-                            <rect x={x} y={y} width={boxW} height={boxH} rx="10" fill={fill} stroke={accent} strokeWidth="1.5" />
+                            <rect x={x} y={y} width={boxW} height={boxH} rx="10" fill={fill} stroke={accent} strokeWidth="1.2" />
                             <text
                                 x={x + boxW / 2}
                                 y={y + boxH / 2 - 6}

@@ -436,3 +436,15 @@ button {
         justify-content: center;
     }
 }
+
+/* Case study request path: carousel strip hides native scrollbar */
+.request-path-strip-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.request-path-strip-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}

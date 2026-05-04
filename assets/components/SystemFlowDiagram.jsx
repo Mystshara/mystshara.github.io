@@ -1,8 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import ProductionFlowDiagram from './ProductionFlowDiagram';
+import RequestPathStrip from './RequestPathStrip';
 
-export default function SystemFlowDiagram({ darkMode }) {
+/**
+ * Case-study request path: horizontal card strip (readable, no SVG scale issues).
+ * @param {boolean} softVisual — kept for API compatibility; strip uses neutral borders only.
+ */
+export default function SystemFlowDiagram({ darkMode, softVisual: _softVisual = false }) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -15,22 +19,25 @@ export default function SystemFlowDiagram({ darkMode }) {
                 padding: '1rem',
                 background: darkMode ? 'rgba(2, 6, 23, 0.65)' : '#f8fafc',
                 border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0',
-                overflowX: 'auto'
+                overflowX: 'visible'
             }}
         >
             <div
                 style={{
                     fontSize: '0.75rem',
                     fontWeight: 700,
-                    color: darkMode ? '#94a3b8' : '#64748b',
-                    marginBottom: '0.5rem',
+                    color: darkMode ? '#cbd5e1' : '#64748b',
+                    marginBottom: '0.65rem',
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase'
                 }}
             >
-                Detailed vertical view (case study)
+                Request path (production)
             </div>
-            <ProductionFlowDiagram darkMode={darkMode} compact />
+            <RequestPathStrip darkMode={darkMode} />
+            <p style={{ margin: '0.75rem 0 0', fontSize: '0.82rem', lineHeight: 1.55, color: darkMode ? '#cbd5e1' : '#64748b', maxWidth: '48rem' }}>
+                Read traffic stays on the API + primary row; heavy work is queued to workers and written back asynchronously.
+            </p>
         </motion.div>
     );
 }

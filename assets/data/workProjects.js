@@ -28,15 +28,18 @@ export const WORK_PROJECTS = [
         description:
             'Integrate once, read consistent results everywhere: a public API on top of a reconciliation engine that turns noisy inputs into one verified match record.',
         icon: '📊',
-        tech: ['PostgreSQL', 'Python', 'Redis', 'Kubernetes', 'React', 'API design', 'Review workflows'],
+        tech: [
+            'PostgreSQL (system of record)',
+            'Python (services + workers)',
+            'Redis (queue + broker)',
+            'Kubernetes (runtime)',
+            'Public API design (read model contract)',
+            'Review workflows (verification system)'
+        ],
         image: liveSitePreview('https://stat-forge.fiberhostingservices.com/'),
         demoLink: 'https://stat-forge.fiberhostingservices.com/',
         repoLink: null,
-        screenshots: [
-            liveSitePreview('https://stat-forge.fiberhostingservices.com/'),
-            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=600&fit=crop'
-        ],
+        screenshots: [],
         caseStudy: {
             summary:
                 'StatForge is a clean external product: verified match outcomes your integrations can rely on. Under that surface is the platform work that makes “one match, one record, one version of truth” real: schema evolution, auth boundaries, background processing, and review workflows that stay coherent as the product grows.',
@@ -44,13 +47,20 @@ export const WORK_PROJECTS = [
                 'A verification and data platform for competitive match outcomes. Tournament platforms, apps, and partners call read endpoints for the same published structure; the hard part is not drawing a chart, it is guaranteeing that every surface agrees on the official result.',
             problem:
                 'Most systems still sit on raw stats and best-effort scrapes. That works until sources disagree, match IDs drift across tools, and your team spends cycles reconciling instead of shipping. The product promise is simple: stop wiring fragile stat pipelines and read outcomes you do not have to second-guess.',
-            whatMakesItDifferent: [
-                'StatForge is not only an API layer. It is a reconciliation and verification system. Raw signals are inconsistent across sources; exposing that inconsistency turns products into support tickets.',
-                'Instead of pushing that burden downstream, StatForge ingests signals, groups them into candidate matches, collects evidence, runs a review workflow, and publishes a single verified outcome. Downstream systems integrate once and read the same contract everywhere: backend, UI, and partner tools.',
-                'The engineering-heavy pieces you see in this case study (queues, migrations, permissions, performance) exist to protect that contract under real traffic and real operators, not to describe a generic internal dashboard.'
+            lifecycleHeroTitle: 'From noisy inputs → one verified outcome',
+            lifecycleHeroSubtitle:
+                'The path from inconsistent signals to a published record your integrations can trust — before request-path architecture.',
+            differencePunchyLines: [
+                'StatForge is not another API.',
+                'It is a verification system.',
+                'Raw signals disagree.',
+                'Stat pipelines drift.',
+                'Teams reconcile instead of shipping.',
+                'StatForge ingests, reconciles, reviews, and publishes a single outcome your system can trust.'
             ],
-            lifecycleIntro:
-                'This is the data lifecycle behind the simple public API: from noisy inputs to a published record integrators can trust. It is what makes StatForge more than “another SaaS with an API.”',
+            pullQuote:
+                'The engineering-heavy pieces in this stack — queues, migrations, permissions, performance — exist to protect that contract under real traffic and real operators.',
+            hideScreenshots: true,
             showStatForgeLifecycle: true,
             architecture: `Integrators (apps, sites, partners)
         │
@@ -65,12 +75,30 @@ export const WORK_PROJECTS = [
                      records + audit trail (Postgres, workers, Redis)
 `,
             stackNotes:
-                'PostgreSQL holds canonical match records, review state, and audit-friendly history. Redis and workers carry ingestion, reconciliation, and notification paths with explicit retries and operator visibility. Kubernetes and CI back safe releases. The public read API is versioned so integrators keep a stable shape while the verification engine evolves behind it.',
+                'PostgreSQL holds canonical match records, review state, and audit-friendly history. Redis and workers carry ingestion, reconciliation, and notification paths with explicit retries and operator visibility. Kubernetes runs the services; the public read API is versioned so integrators keep a stable shape while the verification engine evolves behind it.',
             personalBuild: [
                 'Owned schema and migrations so verification states and publication rules could evolve without breaking existing integrators.',
                 'Implemented job pipelines for ingestion and reconciliation with clear failure semantics (retries, dead letters, operator dashboards).',
                 'Shipped API and auth boundaries so tenants and keys stayed isolated while still supporting partner-style access patterns.',
                 'Worked performance and indexing paths once real match volume and history queries exposed hotspots in the read model.'
+            ],
+            personalBuildCards: [
+                {
+                    title: 'Schema & migrations',
+                    body: 'Owned verification and publication schema so states and rules could evolve without breaking existing integrators.'
+                },
+                {
+                    title: 'Async pipelines',
+                    body: 'Built ingestion and reconciliation workers with explicit retries, dead-letter paths, and operator visibility when jobs fail.'
+                },
+                {
+                    title: 'API + auth boundaries',
+                    body: 'Shipped tenant-safe APIs and keys so reads and partner-style access stayed isolated from production data paths.'
+                },
+                {
+                    title: 'Performance tuning',
+                    body: 'Tightened indexes and read-model queries once real match volume and history exposed latency hotspots.'
+                }
             ],
             technicalChallenges: [
                 'Reconciling conflicting signals without losing traceability: grouping, inference, and evidence had to stay explainable for review and for future disputes.',
