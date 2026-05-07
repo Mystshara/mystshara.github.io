@@ -1,59 +1,50 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { WORK_PROJECTS, BADGE_STYLES } from '../data/workProjects';
+import { WORK_PROJECTS } from '../data/workProjects';
 import { usePortfolioTheme } from '../themeContext';
+import { consoleTokens, proofBadgeStyle } from '../consoleTheme';
 
 const MotionLink = motion(Link);
 
-/** Card / button elevation only — no colored outer glow (reads cleaner). */
-function neutralElevation(darkMode) {
+function cardElevation(tokens, darkMode, featured) {
+    if (darkMode) {
+        return {
+            rest: featured
+                ? `0 12px 40px rgba(0,0,0,0.42), 0 0 0 1px rgba(255,255,255,0.04)`
+                : `0 10px 32px rgba(0,0,0,0.32), 0 0 0 1px rgba(255,255,255,0.03)`,
+            hover: featured
+                ? `0 22px 52px rgba(0,0,0,0.48), 0 0 48px rgba(${tokens.accentRgb}, 0.14)`
+                : `0 18px 42px rgba(0,0,0,0.4), 0 0 36px rgba(${tokens.accentRgb}, 0.1)`
+        };
+    }
     return {
-        standardRest: darkMode ? '0 10px 28px rgba(0,0,0,0.28)' : '0 8px 22px rgba(15,23,42,0.06)',
-        featuredRest: darkMode
-            ? '0 0 0 1px rgba(255,255,255,0.06), 0 22px 56px rgba(0,0,0,0.5)'
-            : '0 14px 38px rgba(15,23,42,0.1)',
-        featuredHover: darkMode
-            ? '0 0 0 1px rgba(255,255,255,0.08), 0 26px 60px rgba(0,0,0,0.55)'
-            : '0 18px 44px rgba(15,23,42,0.12)',
-        standardHover: darkMode
-            ? '0 14px 34px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05)'
-            : '0 12px 30px rgba(15,23,42,0.09)'
+        rest: featured ? tokens.shadowCard : '0 8px 28px rgba(15,23,42,0.07)',
+        hover: featured ? tokens.shadowAccent : '0 14px 38px rgba(15,23,42,0.11)'
     };
 }
 
-function primaryButtonShadow(darkMode) {
-    return darkMode
-        ? '0 1px 2px rgba(0,0,0,0.45), 0 3px 10px rgba(0,0,0,0.3)'
-        : '0 1px 2px rgba(15,23,42,0.06), 0 3px 10px rgba(15,23,42,0.1)';
-}
-
-/** Per-project border accent — flat shells and CTAs (no purple/indigo gradient kit). */
-function projectVisual(slug, darkMode) {
-    const E = neutralElevation(darkMode);
-    const featuredBorder = {
-        statforge: darkMode ? 'rgba(212, 212, 216, 0.38)' : '#d4d4d8',
-        'fiber-hosting': darkMode ? 'rgba(161, 161, 170, 0.42)' : '#d4d4d8',
-        'ai-lead-generation': darkMode ? 'rgba(161, 161, 161, 0.38)' : '#d4d4d4',
-        'security-automation-platform': darkMode ? 'rgba(248, 113, 113, 0.42)' : '#fca5a5'
-    };
-    const edge = featuredBorder[slug] ?? featuredBorder.statforge;
-    const standardEdge = darkMode ? 'rgba(82, 82, 91, 0.55)' : '#e4e4e7';
-    const btnBg = darkMode ? '#3f3f46' : '#27272a';
-    const btnBorder = darkMode ? '1px solid #52525b' : '1px solid #3f3f46';
-
+function projectSurfaces(tokens, darkMode, featured) {
+    const E = cardElevation(tokens, darkMode, featured);
+    const border = `1px solid ${tokens.borderSubtle}`;
+    const cardBg = featured
+        ? darkMode
+            ? tokens.surface3
+            : tokens.surface1
+        : darkMode
+          ? tokens.surface2
+          : tokens.surface3;
     return {
-        borderFeatured: `1px solid ${edge}`,
-        borderStandard: `1px solid ${standardEdge}`,
-        featuredShadow: E.featuredRest,
-        standardShadow: E.standardRest,
-        cardBgFeatured: darkMode ? '#27272a' : '#fafafa',
-        cardBgStandard: darkMode ? '#18181b' : '#ffffff',
-        caseStudyBtnBg: btnBg,
-        caseStudyBtnBorder: btnBorder,
-        caseStudyBtnColor: '#fafafa',
-        hoverFeatured: E.featuredHover,
-        hoverStandard: E.standardHover
+        border,
+        cardBg,
+        shadowRest: E.rest,
+        shadowHover: E.hover,
+        caseStudyBtnBg: tokens.accent,
+        caseStudyBtnBorder: `1px solid rgba(${tokens.accentRgb}, 0.42)`,
+        caseStudyBtnColor: '#F8FAFC',
+        primaryBtnShadow: darkMode
+            ? `0 4px 18px rgba(${tokens.accentRgb}, 0.22), 0 2px 8px rgba(0,0,0,0.35)`
+            : `0 6px 22px rgba(${tokens.accentRgb}, 0.28), 0 2px 8px rgba(15,23,42,0.06)`
     };
 }
 
@@ -74,22 +65,24 @@ function cardVariants(delay = 0) {
 }
 
 function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
-    const visual = projectVisual(project.slug, darkMode);
-    const badge = BADGE_STYLES[project.proofBadge] ?? BADGE_STYLES['Case Study'];
-    const imgH = featured ? 300 : 210;
+    const t = consoleTokens(darkMode);
+    const visual = projectSurfaces(t, darkMode, featured);
+    const badge = proofBadgeStyle(darkMode, t);
+    const imgH = featured ? 326 : 218;
     const titleSize = featured ? '1.85rem' : '1.45rem';
-    /* Type A (featured): deep tinted shell. Type B (standard): lighter body, less chrome. */
-    const cardBg = featured ? visual.cardBgFeatured : visual.cardBgStandard;
-    const border = featured ? visual.borderFeatured : visual.borderStandard;
-    const titleColor = darkMode ? '#f8fafc' : '#0f172a';
-    const subColor = darkMode ? '#94a3b8' : '#64748b';
-    const bodyColor = darkMode ? '#e2e8f0' : '#475569';
-    const chipBg = darkMode ? 'rgba(51, 65, 85, 0.85)' : '#f1f5f9';
-    const chipBorder = darkMode ? '#475569' : '#e2e8f0';
+    const titleColor = t.textPrimary;
+    const subColor = t.textSecondary;
+    const bodyColor = darkMode ? '#E2E8F0' : t.textSecondary;
+    const chipBg = darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(59, 130, 246, 0.06)';
+    const chipBorder = darkMode ? 'rgba(255,255,255,0.08)' : `rgba(${t.accentRgb}, 0.18)`;
     const hasHeroImage = Boolean(project.image);
     const heroOverlayCss = hasHeroImage
-        ? 'linear-gradient(180deg, transparent 0%, transparent 36%, rgba(9, 9, 11, 0.84) 100%)'
-        : 'linear-gradient(180deg, rgba(39, 39, 42, 0.5) 0%, rgba(9, 9, 11, 0.94) 100%)';
+        ? darkMode
+            ? `linear-gradient(180deg, transparent 0%, transparent 28%, rgba(6, 8, 22, 0.15) 55%, rgba(6, 8, 22, 0.88) 100%), radial-gradient(ellipse 90% 60% at 75% 100%, rgba(${t.accentRgb}, 0.12), transparent 55%)`
+            : `linear-gradient(180deg, transparent 0%, rgba(248,250,252,0.4) 100%)`
+        : darkMode
+          ? `linear-gradient(180deg, rgba(${t.accentRgb}, 0.07) 0%, rgba(6, 8, 22, 0.94) 100%)`
+          : `linear-gradient(180deg, rgba(${t.accentRgb}, 0.06) 0%, #f8fafc 100%)`;
 
     const heroTop = (
         <>
@@ -152,9 +145,8 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                     fontWeight: 800,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
-                    background: badge.bg,
-                    color: badge.fg,
-                    boxShadow: '0 6px 20px rgba(0,0,0,0.25)'
+                    ...badge,
+                    boxShadow: darkMode ? '0 8px 24px rgba(0,0,0,0.35)' : '0 6px 18px rgba(15,23,42,0.08)'
                 }}
             >
                 {project.proofBadge}
@@ -172,9 +164,9 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                         fontWeight: 800,
                         letterSpacing: '0.12em',
                         textTransform: 'uppercase',
-                        background: 'rgba(0,0,0,0.45)',
-                        color: '#e4e4e7',
-                        border: '1px solid rgba(255,255,255,0.2)'
+                        background: 'rgba(0,0,0,0.5)',
+                        color: '#E5E7EB',
+                        border: `1px solid rgba(${t.accentRgb}, 0.2)`
                     }}
                 >
                     Flagship platform
@@ -191,10 +183,12 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                         borderRadius: '10px',
                         fontSize: '0.78rem',
                         fontWeight: 800,
-                        background: 'rgba(15, 23, 42, 0.72)',
-                        color: '#f8fafc',
-                        border: '1px solid rgba(255,255,255,0.18)',
-                        boxShadow: '0 8px 24px rgba(0,0,0,0.35)'
+                        background: darkMode ? 'rgba(6, 8, 22, 0.75)' : 'rgba(255,255,255,0.92)',
+                        color: titleColor,
+                        border: `1px solid rgba(${t.accentRgb}, 0.22)`,
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.25)'
                     }}
                 >
                     Open live site →
@@ -202,6 +196,22 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
             ) : null}
         </>
     );
+
+    const ghostBtn = {
+        padding: '0.7rem 1.05rem',
+        borderRadius: '11px',
+        fontWeight: 700,
+        fontSize: '0.86rem',
+        textDecoration: 'none',
+        border: `1px solid ${t.borderSubtle}`,
+        background: darkMode ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.92)',
+        color: titleColor,
+        backdropFilter: darkMode ? 'blur(8px)' : undefined,
+        WebkitBackdropFilter: darkMode ? 'blur(8px)' : undefined,
+        display: 'inline-flex',
+        alignItems: 'center',
+        transition: 'border-color 0.25s ease, box-shadow 0.25s ease'
+    };
 
     return (
         <motion.article
@@ -213,23 +223,24 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                 display: 'flex',
                 flexDirection: 'column',
                 borderRadius: featured ? '22px' : '18px',
-                background: cardBg,
-                border,
+                background: visual.cardBg,
+                border: visual.border,
                 overflow: 'hidden',
-                boxShadow: featured ? visual.featuredShadow : visual.standardShadow
+                boxShadow: visual.shadowRest
             }}
             whileHover={{
-                y: featured ? -6 : -4,
-                boxShadow: featured ? visual.hoverFeatured : visual.hoverStandard
+                y: featured ? -5 : -4,
+                border: `1px solid rgba(${t.accentRgb}, ${darkMode ? 0.32 : 0.35})`,
+                boxShadow: visual.shadowHover
             }}
-            transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 24 }}
         >
             {project.demoLink ? (
                 <motion.a
                     href={project.demoLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ filter: 'brightness(1.08)' }}
+                    whileHover={{ filter: 'brightness(1.06)' }}
                     whileTap={{ scale: 0.995 }}
                     style={{
                         position: 'relative',
@@ -253,13 +264,23 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                         fontSize: titleSize,
                         fontWeight: 800,
                         color: titleColor,
-                        letterSpacing: '-0.02em'
+                        letterSpacing: '-0.02em',
+                        lineHeight: 1.15
                     }}
                 >
                     {project.title}
                 </h3>
-                <div style={{ fontSize: '0.95rem', color: subColor, marginBottom: '0.85rem', fontWeight: 600 }}>{project.subtitle}</div>
-                <p style={{ margin: '0 0 1.1rem', lineHeight: 1.65, fontSize: featured ? '1.05rem' : '0.95rem', color: bodyColor }}>
+                <div style={{ fontSize: '0.95rem', color: subColor, marginBottom: '0.85rem', fontWeight: 600 }}>
+                    {project.subtitle}
+                </div>
+                <p
+                    style={{
+                        margin: '0 0 1.1rem',
+                        lineHeight: 1.7,
+                        fontSize: featured ? '1.05rem' : '0.95rem',
+                        color: bodyColor
+                    }}
+                >
                     {project.description}
                 </p>
 
@@ -284,7 +305,7 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                                     padding: '0.26rem 0.6rem',
                                     background: chipBg,
                                     color: titleColor,
-                                    borderRadius: '8px',
+                                    borderRadius: '999px',
                                     fontSize: '0.7rem',
                                     fontWeight: 600,
                                     border: `1px solid ${chipBorder}`
@@ -305,7 +326,7 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.35rem',
-                            padding: featured ? '0.85rem 1.35rem' : '0.7rem 1.1rem',
+                            padding: featured ? '0.85rem 1.35rem' : '0.72rem 1.15rem',
                             borderRadius: '11px',
                             background: visual.caseStudyBtnBg,
                             color: visual.caseStudyBtnColor,
@@ -314,8 +335,8 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                             cursor: 'pointer',
                             border: visual.caseStudyBtnBorder,
                             textDecoration: 'none',
-                            textShadow: 'none',
-                            boxShadow: primaryButtonShadow(darkMode)
+                            boxShadow: visual.primaryBtnShadow,
+                            transition: 'box-shadow 0.25s ease'
                         }}
                     >
                         Read case study →
@@ -327,18 +348,7 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                             rel="noopener noreferrer"
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.98 }}
-                            style={{
-                                padding: '0.7rem 1.05rem',
-                                borderRadius: '11px',
-                                background: darkMode ? 'rgba(51,65,85,0.6)' : '#fff',
-                                color: titleColor,
-                                textDecoration: 'none',
-                                fontWeight: 700,
-                                fontSize: '0.86rem',
-                                border: darkMode ? '1px solid #64748b' : '1px solid #cbd5e1',
-                                display: 'inline-flex',
-                                alignItems: 'center'
-                            }}
+                            style={{ ...ghostBtn }}
                         >
                             Live / demo
                         </motion.a>
@@ -351,16 +361,9 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.98 }}
                             style={{
-                                padding: '0.7rem 1.05rem',
-                                borderRadius: '11px',
+                                ...ghostBtn,
                                 background: 'transparent',
-                                color: subColor,
-                                textDecoration: 'none',
-                                fontWeight: 700,
-                                fontSize: '0.86rem',
-                                border: darkMode ? '1px solid #64748b' : '1px solid #cbd5e1',
-                                display: 'inline-flex',
-                                alignItems: 'center'
+                                color: subColor
                             }}
                         >
                             GitHub
@@ -374,13 +377,10 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
 
 export default function ProjectsSection() {
     const { darkMode } = usePortfolioTheme();
+    const t = consoleTokens(darkMode);
     const featured = WORK_PROJECTS.find((p) => p.featured) ?? WORK_PROJECTS[0];
     const others = WORK_PROJECTS.filter((p) => p.slug !== featured.slug);
-
-    const sectionBg = darkMode ? '#18181b' : '#fafafa';
-
-    const heading = darkMode ? '#f8fafc' : '#0f172a';
-    const sub = darkMode ? '#94a3b8' : '#64748b';
+    const gutter = 'clamp(1.25rem, 4vw, 2rem)';
 
     return (
         <motion.section
@@ -389,7 +389,10 @@ export default function ProjectsSection() {
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
             variants={fadeInUp}
-            style={{ padding: '5rem 1.25rem 5.5rem', background: sectionBg }}
+            style={{
+                padding: `clamp(5rem, 10vw, 6.25rem) ${gutter} clamp(5.5rem, 11vw, 7rem)`,
+                background: t.sectionSystems
+            }}
         >
             <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
                 <motion.h2
@@ -399,11 +402,12 @@ export default function ProjectsSection() {
                     transition={{ duration: 0.5 }}
                     style={{
                         fontSize: 'clamp(2rem, 4.5vw, 3.1rem)',
-                        marginBottom: '0.65rem',
-                        color: heading,
+                        marginBottom: '0.85rem',
+                        color: t.textPrimary,
                         textAlign: 'center',
                         fontWeight: 800,
-                        letterSpacing: '-0.04em'
+                        letterSpacing: '-0.03em',
+                        lineHeight: 1.05
                     }}
                 >
                     Systems I&apos;ve built
@@ -417,11 +421,11 @@ export default function ProjectsSection() {
                     style={{
                         fontSize: '1.08rem',
                         textAlign: 'center',
-                        marginBottom: '2.5rem',
-                        color: sub,
+                        marginBottom: '2.75rem',
+                        color: t.textMuted,
                         maxWidth: '720px',
-                        margin: '0 auto 2.5rem',
-                        lineHeight: 1.65
+                        margin: '0 auto 2.75rem',
+                        lineHeight: 1.7
                     }}
                 >
                     Each entry is a case study: what the system is, what problem it solves, how it is architected, what I
@@ -429,14 +433,14 @@ export default function ProjectsSection() {
                 </motion.p>
 
                 <div>
-                    <div style={{ marginBottom: '1.75rem' }}>
+                    <div style={{ marginBottom: '1.85rem' }}>
                         <ProjectCard project={featured} featured darkMode={darkMode} animDelay={0} />
                     </div>
                     <div
                         style={{
                             display: 'grid',
                             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                            gap: '1.25rem'
+                            gap: '1.35rem'
                         }}
                     >
                         {others.map((project, i) => (

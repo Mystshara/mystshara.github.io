@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { consoleTokens, glassSurfaceStyle } from '../consoleTheme';
 
 const TIER_PRIMARY = [
     'Kubernetes clusters running production workloads',
@@ -13,27 +14,22 @@ const TIER_SECONDARY = [
     'Operator-grade hosting and edge delivery paths'
 ];
 
-function ProofTierRow({ lines, tier, darkMode }) {
+function ProofTierRow({ lines, tier, darkMode, tokens }) {
     const isPrimary = tier === 'primary';
-    const text = darkMode ? '#e2e8f0' : '#1e293b';
-    const dot = darkMode ? '#34d399' : '#059669';
-    const cardBg = isPrimary
-        ? darkMode
-            ? 'rgba(30, 41, 59, 0.88)'
-            : '#ffffff'
-        : darkMode
-          ? 'rgba(15, 23, 42, 0.92)'
-          : '#e8eef5';
-    const cardBorder = isPrimary
-        ? darkMode
-            ? '1px solid rgba(148, 163, 184, 0.2)'
-            : '1px solid #e2e8f0'
-        : darkMode
-          ? '1px solid rgba(51, 65, 85, 0.85)'
-          : '1px solid #cbd5e1';
+    const text = darkMode ? '#E2E8F0' : tokens.textSecondary;
+    const dot = `rgba(${tokens.accentRgb}, ${isPrimary ? 1 : 0.65})`;
+    const cardBg = darkMode ? `rgba(17, 24, 39, ${isPrimary ? 0.72 : 0.55})` : isPrimary ? '#FFFFFF' : tokens.surface3;
+    const cardBorder = darkMode ? tokens.borderSubtle : tokens.borderSubtle;
     const fontSize = isPrimary ? '1.02rem' : '0.9rem';
     const fontWeight = isPrimary ? 650 : 600;
     const padding = isPrimary ? '1.15rem 1.2rem' : '0.85rem 1rem';
+    const blurShadow = darkMode
+        ? isPrimary
+            ? `0 10px 28px rgba(0,0,0,0.28)`
+            : `0 6px 20px rgba(0,0,0,0.2)`
+        : isPrimary
+          ? `0 8px 26px rgba(15,23,42,0.07)`
+          : `0 4px 16px rgba(15,23,42,0.05)`;
 
     return (
         <div
@@ -47,10 +43,12 @@ function ProofTierRow({ lines, tier, darkMode }) {
                 <motion.div
                     key={line}
                     whileHover={{
-                        y: -2,
-                        boxShadow: darkMode ? '0 8px 20px rgba(0,0,0,0.28)' : '0 6px 18px rgba(15,23,42,0.07)'
+                        y: -3,
+                        boxShadow: darkMode
+                            ? `0 12px 32px rgba(0,0,0,0.32), 0 0 28px rgba(${tokens.accentRgb}, 0.08)`
+                            : `0 12px 32px rgba(15,23,42,0.1)`
                     }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 28 }}
                     style={{
                         display: 'flex',
                         alignItems: 'flex-start',
@@ -58,11 +56,15 @@ function ProofTierRow({ lines, tier, darkMode }) {
                         padding,
                         borderRadius: isPrimary ? '14px' : '11px',
                         background: cardBg,
-                        border: cardBorder,
+                        border: `1px solid ${cardBorder}`,
+                        boxShadow: blurShadow,
+                        backdropFilter: darkMode ? 'blur(10px)' : undefined,
+                        WebkitBackdropFilter: darkMode ? 'blur(10px)' : undefined,
                         color: text,
                         fontSize,
                         fontWeight,
-                        lineHeight: 1.45
+                        lineHeight: 1.55,
+                        transition: 'box-shadow 0.25s ease, border-color 0.25s ease'
                     }}
                 >
                     <span
@@ -74,7 +76,7 @@ function ProofTierRow({ lines, tier, darkMode }) {
                             borderRadius: '50%',
                             marginTop: '0.32rem',
                             background: dot,
-                            boxShadow: 'none',
+                            boxShadow: darkMode ? `0 0 12px rgba(${tokens.accentRgb}, 0.45)` : 'none',
                             opacity: isPrimary ? 1 : 0.85
                         }}
                     />
@@ -86,10 +88,8 @@ function ProofTierRow({ lines, tier, darkMode }) {
 }
 
 export default function BuiltProofSection({ darkMode }) {
-    /* Type C — utility: subtle shell, no heavy glow */
-    const shellBg = darkMode ? 'rgba(15, 23, 42, 0.35)' : 'rgba(248, 250, 252, 0.92)';
-    const shellBorder = darkMode ? '1px solid rgba(51, 65, 85, 0.55)' : '1px solid #e2e8f0';
-    const secondaryBandBg = darkMode ? 'rgba(2, 6, 23, 0.45)' : 'rgba(226, 232, 240, 0.55)';
+    const t = consoleTokens(darkMode);
+    const shell = glassSurfaceStyle(darkMode, t);
 
     return (
         <motion.section
@@ -98,13 +98,12 @@ export default function BuiltProofSection({ darkMode }) {
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.5 }}
             style={{
-                margin: '0 auto 3rem',
+                margin: '0 auto',
                 maxWidth: '1100px',
-                padding: '1.85rem 1.35rem',
-                borderRadius: '16px',
-                background: shellBg,
-                border: shellBorder,
-                boxShadow: darkMode ? 'inset 0 1px 0 rgba(255,255,255,0.03)' : '0 4px 24px rgba(15,23,42,0.04)'
+                padding: 'clamp(2rem, 5vw, 2.75rem) clamp(1.35rem, 4vw, 2rem)',
+                borderRadius: '18px',
+                ...shell,
+                boxShadow: darkMode ? `${shell.boxShadow}, inset 0 1px 0 rgba(255,255,255,0.04)` : shell.boxShadow
             }}
         >
             <h2
@@ -112,9 +111,10 @@ export default function BuiltProofSection({ darkMode }) {
                     fontSize: 'clamp(1.45rem, 2.8vw, 1.85rem)',
                     fontWeight: 800,
                     letterSpacing: '-0.03em',
-                    marginBottom: '0.45rem',
-                    color: darkMode ? '#f8fafc' : '#0f172a',
-                    textAlign: 'center'
+                    marginBottom: '0.55rem',
+                    color: t.textPrimary,
+                    textAlign: 'center',
+                    lineHeight: 1.1
                 }}
             >
                 What I&apos;ve actually built
@@ -122,29 +122,31 @@ export default function BuiltProofSection({ darkMode }) {
             <p
                 style={{
                     textAlign: 'center',
-                    color: darkMode ? '#94a3b8' : '#64748b',
-                    marginBottom: '1.5rem',
-                    fontSize: '0.96rem',
+                    color: t.textMuted,
+                    marginBottom: '1.75rem',
+                    fontSize: '0.98rem',
                     maxWidth: '540px',
                     marginLeft: 'auto',
                     marginRight: 'auto',
-                    lineHeight: 1.55
+                    lineHeight: 1.7
                 }}
             >
                 Not marketing lines. Concrete systems and surfaces that had to work under real constraints.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                <ProofTierRow lines={TIER_PRIMARY} tier="primary" darkMode={darkMode} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <ProofTierRow lines={TIER_PRIMARY} tier="primary" darkMode={darkMode} tokens={t} />
                 <div
                     style={{
-                        borderRadius: '12px',
+                        borderRadius: '14px',
                         padding: '1rem 0.85rem',
-                        background: secondaryBandBg,
-                        border: darkMode ? '1px solid rgba(30, 41, 59, 0.9)' : '1px solid #cbd5e1'
+                        background: darkMode ? 'rgba(6, 8, 22, 0.55)' : t.surface3,
+                        border: `1px solid ${t.borderSubtle}`,
+                        backdropFilter: darkMode ? 'blur(8px)' : undefined,
+                        WebkitBackdropFilter: darkMode ? 'blur(8px)' : undefined
                     }}
                 >
-                    <ProofTierRow lines={TIER_SECONDARY} tier="secondary" darkMode={darkMode} />
+                    <ProofTierRow lines={TIER_SECONDARY} tier="secondary" darkMode={darkMode} tokens={t} />
                 </div>
             </div>
         </motion.section>

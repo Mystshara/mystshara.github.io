@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { consoleTokens } from '../consoleTheme';
 
 const fullBleed = {
     width: '100vw',
@@ -11,9 +12,10 @@ const fullBleed = {
 };
 
 function Resume({ darkMode = true }) {
-    const sub = darkMode ? '#cbd5e1' : '#475569';
-    const muted = darkMode ? '#94a3b8' : '#64748b';
-    const linkColor = darkMode ? '#d4d4d8' : '#52525b';
+    const t = consoleTokens(darkMode);
+    const sub = darkMode ? '#CBD5E1' : t.textSecondary;
+    const muted = t.textMuted;
+    const linkColor = darkMode ? t.textSecondary : t.textSecondary;
 
     const contactInfo = [
         { label: 'Email', value: 'b_l_turner@yahoo.com', link: 'mailto:b_l_turner@yahoo.com' },
@@ -22,8 +24,9 @@ function Resume({ darkMode = true }) {
         { label: 'Portfolio', value: 'mystshara.github.io', link: 'https://mystshara.github.io' }
     ];
 
-    const ctaBg = darkMode ? '#18181b' : '#fafafa';
-    const ctaBorder = darkMode ? '1px solid rgba(51, 65, 85, 0.65)' : '1px solid rgba(203, 213, 225, 0.95)';
+    const ctaBackdrop = darkMode
+        ? `radial-gradient(circle at 50% 20%, rgba(${t.accentRgb}, 0.16), transparent 58%), radial-gradient(circle at 80% 80%, rgba(34,211,238,0.06), transparent 45%), ${t.bgElevated}`
+        : `radial-gradient(circle at 50% 25%, rgba(${t.accentRgb}, 0.12), transparent 55%), #FFFFFF`;
 
     return (
         <motion.section
@@ -31,17 +34,19 @@ function Resume({ darkMode = true }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.55 }}
-            style={{ marginBottom: '0', paddingBottom: '3.5rem' }}
+            style={{ marginBottom: '0', paddingBottom: 'clamp(3rem, 8vw, 4rem)' }}
         >
             <div
                 style={{
                     ...fullBleed,
                     marginTop: '1rem',
-                    padding: 'clamp(3rem, 8vw, 4.5rem) 1.5rem',
-                    background: ctaBg,
-                    borderTop: ctaBorder,
-                    borderBottom: ctaBorder,
-                    boxShadow: darkMode ? 'inset 0 1px 0 rgba(255,255,255,0.04)' : 'none'
+                    padding: 'clamp(3.5rem, 9vw, 5rem) 1.5rem',
+                    background: ctaBackdrop,
+                    borderTop: `1px solid ${t.borderSubtle}`,
+                    borderBottom: `1px solid ${t.borderSubtle}`,
+                    boxShadow: darkMode
+                        ? `inset 0 1px 0 rgba(255,255,255,0.04), 0 -24px 64px rgba(0,0,0,0.35)`
+                        : `0 16px 48px rgba(15,23,42,0.08)`
                 }}
             >
                 <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
@@ -51,8 +56,8 @@ function Resume({ darkMode = true }) {
                             fontWeight: 800,
                             letterSpacing: '-0.03em',
                             margin: '0 0 1rem',
-                            color: darkMode ? '#f8fafc' : '#0f172a',
-                            lineHeight: 1.15
+                            color: t.textPrimary,
+                            lineHeight: 1.08
                         }}
                     >
                         Let&apos;s build something real
@@ -60,9 +65,9 @@ function Resume({ darkMode = true }) {
                     <p
                         style={{
                             fontSize: 'clamp(1.02rem, 2.2vw, 1.15rem)',
-                            lineHeight: 1.65,
+                            lineHeight: 1.7,
                             color: sub,
-                            margin: '0 auto 1.75rem',
+                            margin: '0 auto 2rem',
                             maxWidth: '540px'
                         }}
                     >
@@ -70,25 +75,24 @@ function Resume({ darkMode = true }) {
                     </p>
                     <motion.a
                         href="mailto:b_l_turner@yahoo.com"
-                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         style={{
                             display: 'inline-flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            padding: '1rem 2.25rem',
+                            padding: '1.05rem 2.5rem',
                             borderRadius: '999px',
-                            background: darkMode ? '#3f3f46' : '#27272a',
-                            color: '#fafafa',
+                            background: t.accent,
+                            color: '#F8FAFC',
                             textDecoration: 'none',
                             fontWeight: 800,
-                            fontSize: '1.02rem',
+                            fontSize: '1.05rem',
                             letterSpacing: '-0.01em',
-                            textShadow: 'none',
-                            border: darkMode ? '1px solid #52525b' : '1px solid #3f3f46',
+                            border: `1px solid rgba(${t.accentRgb}, 0.45)`,
                             boxShadow: darkMode
-                                ? '0 1px 2px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.35)'
-                                : '0 1px 2px rgba(15,23,42,0.08), 0 4px 14px rgba(15,23,42,0.12)'
+                                ? `0 10px 36px rgba(${t.accentRgb}, 0.28), 0 4px 14px rgba(0,0,0,0.45)`
+                                : `0 10px 36px rgba(${t.accentRgb}, 0.35), 0 4px 14px rgba(15,23,42,0.08)`
                         }}
                     >
                         Talk to me about your system
@@ -100,7 +104,7 @@ function Resume({ darkMode = true }) {
                 style={{
                     maxWidth: '920px',
                     margin: '0 auto',
-                    padding: '2.25rem 1.5rem 0',
+                    padding: '2.75rem 1.5rem 0',
                     textAlign: 'center'
                 }}
             >
@@ -119,9 +123,11 @@ function Resume({ darkMode = true }) {
                         fontWeight: 700,
                         fontSize: '0.88rem',
                         textDecoration: 'none',
-                        color: darkMode ? '#e2e8f0' : '#1e293b',
-                        border: darkMode ? '1px solid rgba(148, 163, 184, 0.4)' : '1px solid #cbd5e1',
-                        background: darkMode ? 'rgba(30, 41, 59, 0.5)' : '#ffffff'
+                        color: t.textPrimary,
+                        border: `1px solid ${t.borderSubtle}`,
+                        background: darkMode ? 'rgba(255,255,255,0.04)' : '#FFFFFF',
+                        backdropFilter: darkMode ? 'blur(8px)' : undefined,
+                        WebkitBackdropFilter: darkMode ? 'blur(8px)' : undefined
                     }}
                 >
                     Download resume (DOCX)
@@ -139,7 +145,7 @@ function Resume({ darkMode = true }) {
                                 fontWeight: 600,
                                 color: linkColor,
                                 textDecoration: 'none',
-                                borderBottom: `1px solid ${darkMode ? 'rgba(147, 197, 253, 0.35)' : 'rgba(37, 99, 235, 0.35)'}`
+                                borderBottom: `1px solid rgba(${t.accentRgb}, ${darkMode ? 0.35 : 0.45})`
                             }}
                         >
                             {c.label}

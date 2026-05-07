@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { consoleTokens, glassSurfaceStyle } from '../consoleTheme';
 
 const TECH_GROUPS = [
     { label: 'Infrastructure', items: ['Kubernetes', 'Docker', 'NGINX'] },
@@ -42,17 +43,25 @@ const pillarItem = {
 };
 
 function About({ darkMode = true }) {
-    /* Type C — utility: readable, low chrome */
-    const cardBg = darkMode ? 'rgba(15, 23, 42, 0.55)' : '#ffffff';
-    const cardBorder = darkMode ? '1px solid rgba(51, 65, 85, 0.65)' : '1px solid #e2e8f0';
-    const text = darkMode ? '#e2e8f0' : '#334155';
-    const muted = darkMode ? '#94a3b8' : '#64748b';
-    const headingColor = darkMode ? '#d4d4d8' : '#3f3f46';
-    const groupShellBg = darkMode ? 'rgba(2, 6, 23, 0.5)' : '#f4f4f5';
-    const groupShellBorder = darkMode ? '1px solid rgba(71, 85, 105, 0.65)' : '1px solid #e4e4e7';
-    const chipBg = darkMode ? 'rgba(63, 63, 70, 0.45)' : '#f4f4f5';
-    const chipBorder = darkMode ? 'rgba(113, 113, 122, 0.45)' : '#d4d4d8';
-    const chipText = darkMode ? '#e4e4e7' : '#27272a';
+    const t = consoleTokens(darkMode);
+    const shell = glassSurfaceStyle(darkMode, t);
+    const text = darkMode ? '#E2E8F0' : t.textSecondary;
+    const muted = t.textMuted;
+    const headingAccent = darkMode ? '#93C5FD' : t.accent;
+
+    const pillarShell = {
+        padding: '1.35rem 1.25rem',
+        borderRadius: '14px',
+        background: darkMode ? 'rgba(17, 24, 39, 0.55)' : 'rgba(255,255,255,0.95)',
+        border: `1px solid ${t.borderSubtle}`,
+        backdropFilter: darkMode ? 'blur(10px)' : undefined,
+        WebkitBackdropFilter: darkMode ? 'blur(10px)' : undefined,
+        boxShadow: darkMode ? '0 8px 28px rgba(0,0,0,0.22)' : '0 6px 22px rgba(15,23,42,0.06)'
+    };
+
+    const techPills = TECH_GROUPS.flatMap((group) =>
+        group.items.map((name) => ({ name, group: group.label }))
+    );
 
     return (
         <motion.section
@@ -61,30 +70,30 @@ function About({ darkMode = true }) {
             viewport={{ once: true, margin: '-80px' }}
             transition={{ duration: 0.65 }}
             style={{
-                marginBottom: '4rem',
-                padding: '2.25rem 0 1.1rem',
-                borderRadius: '18px',
-                background: darkMode ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.75)',
-                border: darkMode ? '1px solid rgba(51, 65, 85, 0.45)' : '1px solid #e2e8f0',
-                boxShadow: 'none'
+                marginBottom: 0,
+                padding: 'clamp(2.25rem, 5vw, 3rem) clamp(1.25rem, 4vw, 2.75rem)',
+                borderRadius: '20px',
+                ...shell,
+                boxShadow: darkMode ? `${shell.boxShadow}, inset 0 1px 0 rgba(255,255,255,0.03)` : shell.boxShadow
             }}
         >
             <div
                 style={{
                     maxWidth: '1080px',
                     margin: '0 auto',
-                    paddingLeft: 'clamp(1.35rem, 5vw, 3.25rem)',
-                    paddingRight: 'clamp(1.35rem, 5vw, 3.25rem)'
+                    paddingLeft: 'clamp(0.5rem, 3vw, 1rem)',
+                    paddingRight: 'clamp(0.5rem, 3vw, 1rem)'
                 }}
             >
                 <h2
                     style={{
                         fontSize: 'clamp(1.85rem, 4vw, 2.5rem)',
-                        marginBottom: '0.5rem',
-                        color: darkMode ? '#fafafa' : '#18181b',
+                        marginBottom: '0.65rem',
+                        color: t.textPrimary,
                         textAlign: 'center',
                         fontWeight: 800,
-                        letterSpacing: '-0.03em'
+                        letterSpacing: '-0.03em',
+                        lineHeight: 1.05
                     }}
                 >
                     How I work
@@ -94,9 +103,9 @@ function About({ darkMode = true }) {
                         textAlign: 'center',
                         color: muted,
                         maxWidth: '520px',
-                        margin: '0 auto 2.25rem',
+                        margin: '0 auto 2.75rem',
                         fontSize: '1rem',
-                        lineHeight: 1.6
+                        lineHeight: 1.7
                     }}
                 >
                     Four pillars I optimize for on every serious system.
@@ -111,7 +120,7 @@ function About({ darkMode = true }) {
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                         gap: '1.65rem',
-                        marginBottom: '2.75rem',
+                        marginBottom: '3rem',
                         padding: 0
                     }}
                 >
@@ -120,33 +129,47 @@ function About({ darkMode = true }) {
                             key={p.title}
                             variants={pillarItem}
                             whileHover={{
-                                y: -4,
+                                y: -5,
+                                borderColor: `rgba(${t.accentRgb}, ${darkMode ? 0.35 : 0.4})`,
                                 boxShadow: darkMode
-                                    ? '0 14px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.06)'
-                                    : '0 12px 28px rgba(15,23,42,0.08)'
+                                    ? `0 16px 36px rgba(0,0,0,0.32), 0 0 36px rgba(${t.accentRgb}, 0.08)`
+                                    : `0 14px 34px rgba(15,23,42,0.1)`
                             }}
                             transition={{ type: 'spring', stiffness: 320, damping: 22 }}
                             style={{
-                                padding: '1.35rem 1.25rem',
-                                borderRadius: '14px',
-                                background: cardBg,
-                                border: cardBorder,
-                                textAlign: 'left'
+                                ...pillarShell,
+                                textAlign: 'left',
+                                transition: 'border-color 0.25s ease, box-shadow 0.25s ease'
                             }}
                         >
-                            <div style={{ fontSize: '1.75rem', marginBottom: '0.65rem' }}>{p.icon}</div>
+                            <div
+                                style={{
+                                    fontSize: '1.75rem',
+                                    marginBottom: '0.65rem',
+                                    width: '2.75rem',
+                                    height: '2.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: '12px',
+                                    background: `rgba(${t.accentRgb}, ${darkMode ? 0.12 : 0.1})`,
+                                    border: `1px solid rgba(${t.accentRgb}, ${darkMode ? 0.2 : 0.22})`
+                                }}
+                            >
+                                {p.icon}
+                            </div>
                             <h3
                                 style={{
                                     margin: '0 0 0.5rem',
                                     fontSize: '1.05rem',
                                     fontWeight: 800,
-                                    color: headingColor,
+                                    color: headingAccent,
                                     letterSpacing: '-0.02em'
                                 }}
                             >
                                 {p.title}
                             </h3>
-                            <p style={{ margin: 0, lineHeight: 1.55, color: text, fontSize: '0.92rem' }}>{p.body}</p>
+                            <p style={{ margin: 0, lineHeight: 1.7, color: text, fontSize: '0.92rem' }}>{p.body}</p>
                         </motion.div>
                     ))}
                 </motion.div>
@@ -160,64 +183,42 @@ function About({ darkMode = true }) {
                     <h3
                         style={{
                             fontSize: '1.35rem',
-                            marginBottom: '1.25rem',
+                            marginBottom: '1.35rem',
                             textAlign: 'center',
-                            color: headingColor,
-                            fontWeight: 800
+                            color: t.textPrimary,
+                            fontWeight: 800,
+                            letterSpacing: '-0.02em'
                         }}
                     >
                         Tech stack
                     </h3>
                     <div
                         style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                            gap: '0.85rem',
-                            maxWidth: '960px',
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            gap: '0.5rem',
+                            maxWidth: '920px',
                             margin: '0 auto'
                         }}
                     >
-                        {TECH_GROUPS.map((group) => (
-                            <div
-                                key={group.label}
+                        {techPills.map(({ name, group }) => (
+                            <span
+                                key={`${group}-${name}`}
+                                title={group}
                                 style={{
-                                    padding: '0.85rem 1rem',
-                                    borderRadius: '12px',
-                                    background: groupShellBg,
-                                    border: groupShellBorder
+                                    padding: '0.38rem 0.75rem',
+                                    borderRadius: '999px',
+                                    background: darkMode ? 'rgba(255,255,255,0.05)' : `rgba(${t.accentRgb}, 0.07)`,
+                                    border: `1px solid ${darkMode ? 'rgba(255,255,255,0.08)' : `rgba(${t.accentRgb}, 0.18)`}`,
+                                    color: t.textPrimary,
+                                    fontSize: '0.82rem',
+                                    fontWeight: 600,
+                                    letterSpacing: '-0.01em'
                                 }}
                             >
-                                <div
-                                    style={{
-                                        fontSize: '0.72rem',
-                                        fontWeight: 800,
-                                        letterSpacing: '0.08em',
-                                        textTransform: 'uppercase',
-                                        color: muted,
-                                        marginBottom: '0.55rem'
-                                    }}
-                                >
-                                    {group.label}
-                                </div>
-                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                                    {group.items.map((name) => (
-                                        <span
-                                            key={name}
-                                            style={{
-                                                padding: '0.32rem 0.65rem',
-                                                borderRadius: '8px',
-                                                background: chipBg,
-                                                border: `1px solid ${chipBorder}`,
-                                                color: chipText,
-                                                fontSize: '0.84rem',
-                                                fontWeight: 600
-                                            }}
-                                        >
-                                            {name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
+                                {name}
+                            </span>
                         ))}
                     </div>
                 </motion.div>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getProjectBySlug, BADGE_STYLES } from '../data/workProjects';
+import { getProjectBySlug } from '../data/workProjects';
 import { usePortfolioTheme } from '../themeContext';
+import { consoleTokens, proofBadgeStyle } from '../consoleTheme';
 import SystemFlowDiagram from './SystemFlowDiagram';
 import StatForgeLifecycleDiagram from './StatForgeLifecycleDiagram';
 
@@ -10,10 +11,10 @@ import StatForgeLifecycleDiagram from './StatForgeLifecycleDiagram';
  * @param {'prose' | 'column'} contentWidth — prose caps line length (~42rem). column matches full case-study width (cards, diagrams).
  */
 function Section({ title, children, darkMode, noBorder = false, contentWidth = 'prose' }) {
-    const border = darkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(15, 23, 42, 0.12)';
-    const heading = darkMode ? '#f8fafc' : '#0f172a';
-    /* Dark: avoid slate-300 on slate-900 (mushy); use slate-200-level for WCAG-friendly body */
-    const body = darkMode ? '#e2e8f0' : '#475569';
+    const t = consoleTokens(darkMode);
+    const border = darkMode ? t.borderSubtle : t.borderSubtle;
+    const heading = t.textPrimary;
+    const body = darkMode ? '#E2E8F0' : t.textSecondary;
     const isColumn = contentWidth === 'column';
 
     return (
@@ -43,7 +44,7 @@ function Section({ title, children, darkMode, noBorder = false, contentWidth = '
             <div
                 style={{
                     color: body,
-                    lineHeight: darkMode ? 1.72 : 1.75,
+                    lineHeight: 1.7,
                     fontSize: darkMode ? '1.0625rem' : '1.02rem',
                     maxWidth: isColumn ? 'none' : '42rem',
                     width: isColumn ? '100%' : undefined,
@@ -56,10 +57,9 @@ function Section({ title, children, darkMode, noBorder = false, contentWidth = '
     );
 }
 
-function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
-    const bg = darkMode ? '#27272a' : '#f4f4f5';
-    const fg = darkMode ? '#f1f5f9' : '#18181b';
-    const quoteColor = darkMode ? '#cbd5e1' : '#52525b';
+function StatForgeDifferenceBlock({ lines, quote, darkMode, tokens: tk }) {
+    const fg = darkMode ? '#F1F5F9' : tk.textPrimary;
+    const quoteColor = darkMode ? '#CBD5E1' : tk.textSecondary;
 
     return (
         <motion.section
@@ -71,9 +71,11 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                 margin: '0 0 2.75rem',
                 padding: 'clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2.25rem)',
                 borderRadius: '18px',
-                background: darkMode ? bg : '#f4f4f5',
-                border: darkMode ? '1px solid rgba(71, 85, 105, 0.85)' : '1px solid rgba(148, 163, 184, 0.35)',
-                boxShadow: darkMode ? '0 18px 48px rgba(0,0,0,0.45)' : '0 12px 36px rgba(15,23,42,0.15)'
+                background: darkMode ? `rgba(17, 24, 39, 0.72)` : tk.surface1,
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: `1px solid ${tk.borderSubtle}`,
+                boxShadow: darkMode ? `0 18px 48px rgba(0,0,0,0.45), 0 0 40px rgba(${tk.accentRgb}, 0.06)` : tk.shadowCard
             }}
         >
             <p
@@ -82,7 +84,7 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                     fontWeight: 800,
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
-                    color: darkMode ? '#a1a1aa' : '#71717a',
+                    color: tk.textMuted,
                     margin: '0 0 1.25rem'
                 }}
             >
@@ -110,9 +112,9 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                     style={{
                         margin: 0,
                         padding: '1rem 0 0 1.1rem',
-                        borderLeft: '4px solid #71717a',
+                        borderLeft: `4px solid rgba(${tk.accentRgb}, 0.45)`,
                         fontSize: '1.05rem',
-                        lineHeight: 1.65,
+                        lineHeight: 1.7,
                         color: quoteColor,
                         fontWeight: 500,
                         fontStyle: 'italic'
@@ -126,10 +128,11 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
 }
 
 function PersonalBuildCards({ cards, darkMode }) {
-    const cardBg = darkMode ? 'rgba(30, 41, 59, 0.65)' : '#ffffff';
-    const border = darkMode ? '1px solid rgba(51, 65, 85, 0.9)' : '1px solid #e2e8f0';
-    const titleC = darkMode ? '#f8fafc' : '#0f172a';
-    const bodyC = darkMode ? '#cbd5e1' : '#64748b';
+    const tk = consoleTokens(darkMode);
+    const cardBg = darkMode ? `rgba(17, 24, 39, 0.65)` : tk.surface1;
+    const border = `1px solid ${tk.borderSubtle}`;
+    const titleC = tk.textPrimary;
+    const bodyC = tk.textMuted;
 
     return (
         <motion.section
@@ -137,13 +140,13 @@ function PersonalBuildCards({ cards, darkMode }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.45 }}
-            style={{ marginBottom: '2.5rem', paddingBottom: '2rem', borderBottom: darkMode ? '1px solid rgba(148,163,184,0.2)' : '1px solid rgba(15,23,42,0.12)' }}
+            style={{ marginBottom: '2.5rem', paddingBottom: '2rem', borderBottom: `1px solid ${tk.borderSubtle}` }}
         >
             <h2
                 style={{
                     fontSize: '1.35rem',
                     fontWeight: 700,
-                    color: darkMode ? '#e2e8f0' : '#0f172a',
+                    color: tk.textPrimary,
                     margin: '0 0 1.15rem',
                     letterSpacing: '-0.02em'
                 }}
@@ -180,12 +183,12 @@ function PersonalBuildCards({ cards, darkMode }) {
 export default function CaseStudyPage() {
     const { slug } = useParams();
     const { darkMode } = usePortfolioTheme();
+    const t = consoleTokens(darkMode);
     const project = getProjectBySlug(slug);
-    const bg = darkMode ? '#0f172a' : '#f8fafc';
-    const surface = darkMode ? '#1e293b' : '#ffffff';
-    /* Secondary lines: brighter on dark than slate-400 to reduce eye strain */
-    const muted = darkMode ? '#cbd5e1' : '#64748b';
-    const heroText = darkMode ? '#f8fafc' : '#0f172a';
+    const bg = t.bgDeep;
+    const surface = darkMode ? t.surface2 : t.surface1;
+    const muted = t.textMuted;
+    const heroText = t.textPrimary;
 
     if (!project || !project.caseStudy) {
         return (
@@ -195,10 +198,10 @@ export default function CaseStudyPage() {
                 <Link
                     to="/"
                     style={{
-                        color: darkMode ? '#d4d4d8' : '#52525b',
+                        color: t.textSecondary,
                         fontWeight: 600,
                         textDecoration: 'none',
-                        borderBottom: darkMode ? '2px solid rgba(212,212,216,0.35)' : '2px solid rgba(82,82,91,0.28)'
+                        borderBottom: `2px solid rgba(${t.accentRgb}, 0.35)`
                     }}
                 >
                     ← Back to home
@@ -208,12 +211,12 @@ export default function CaseStudyPage() {
     }
 
     const cs = project.caseStudy;
-    const badge = BADGE_STYLES[project.proofBadge] ?? BADGE_STYLES['Case Study'];
+    const badgeStyle = proofBadgeStyle(darkMode, t);
     const isStatForge = slug === 'statforge';
     const contentMax = isStatForge ? '880px' : '820px';
     const showScreenshots = !cs.hideScreenshots && Array.isArray(project.screenshots) && project.screenshots.length > 0;
 
-    const pageBg = darkMode ? '#0f172a' : '#fafafa';
+    const pageBg = darkMode ? t.bgMid : t.bgDeep;
 
     const heroLifecycle = isStatForge && cs.showStatForgeLifecycle;
 
@@ -241,7 +244,7 @@ export default function CaseStudyPage() {
                     style={{
                         display: 'inline-block',
                         marginBottom: '1.75rem',
-                        color: darkMode ? '#d4d4d8' : '#52525b',
+                        color: t.textSecondary,
                         fontWeight: 600,
                         textDecoration: 'none',
                         fontSize: '0.95rem'
@@ -260,8 +263,7 @@ export default function CaseStudyPage() {
                             fontWeight: 700,
                             letterSpacing: '0.04em',
                             textTransform: 'uppercase',
-                            background: badge.bg,
-                            color: badge.fg
+                            ...badgeStyle
                         }}
                     >
                         {project.proofBadge}
@@ -364,7 +366,7 @@ export default function CaseStudyPage() {
                         </Section>
 
                         {Array.isArray(cs.differencePunchyLines) && cs.differencePunchyLines.length > 0 ? (
-                            <StatForgeDifferenceBlock lines={cs.differencePunchyLines} quote={cs.pullQuote} darkMode={darkMode} />
+                            <StatForgeDifferenceBlock lines={cs.differencePunchyLines} quote={cs.pullQuote} darkMode={darkMode} tokens={t} />
                         ) : null}
 
                         <Section title="Architecture (high level)" darkMode={darkMode} contentWidth="column">
@@ -590,7 +592,7 @@ export default function CaseStudyPage() {
                         <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
                             {cs.links.map((l) => (
                                 <li key={l.href} style={{ marginBottom: '0.5rem' }}>
-                                    <a href={l.href} target="_blank" rel="noopener noreferrer" style={{ color: darkMode ? '#d4d4d8' : '#52525b', fontWeight: 600 }}>
+                                    <a href={l.href} target="_blank" rel="noopener noreferrer" style={{ color: t.accent, fontWeight: 600 }}>
                                         {l.label}
                                     </a>
                                 </li>

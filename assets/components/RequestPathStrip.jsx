@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { consoleTokens } from '../consoleTheme';
 
 /** Same logical path — carousel scrolls the inner track (not window). */
 const STEPS = [
@@ -62,18 +63,19 @@ function scrollCardToCenter(scroller, card) {
 }
 
 export default function RequestPathStrip({ darkMode }) {
+    const t = consoleTokens(darkMode);
     const scrollerRef = useRef(null);
     const cardRefs = useRef([]);
     const suppressObserver = useRef(false);
     const [active, setActive] = useState(0);
 
-    const cardBg = darkMode ? 'rgba(15, 23, 42, 0.92)' : '#ffffff';
-    const border = darkMode ? '1px solid rgba(71, 85, 105, 0.95)' : '1px solid #e2e8f0';
-    const titleC = darkMode ? '#f8fafc' : '#0f172a';
-    const detailC = darkMode ? '#cbd5e1' : '#64748b';
-    const arrow = darkMode ? '#94a3b8' : '#94a3b8';
-    const dotActive = darkMode ? '#fafafa' : '#27272a';
-    const dotIdle = darkMode ? '#475569' : '#cbd5e1';
+    const cardBg = darkMode ? `rgba(${t.glassRgb}, 0.82)` : t.surface1;
+    const border = `1px solid ${t.borderSubtle}`;
+    const titleC = t.textPrimary;
+    const detailC = t.textSecondary;
+    const arrow = t.textMuted;
+    const dotActive = t.accent;
+    const dotIdle = darkMode ? 'rgba(148, 163, 184, 0.35)' : t.borderSubtle;
 
     const goTo = useCallback((index) => {
         const i = Math.max(0, Math.min(STEPS.length - 1, index));

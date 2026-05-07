@@ -1,10 +1,11 @@
 import React, { useId } from 'react';
 import { motion } from 'framer-motion';
+import { consoleTokens } from '../consoleTheme';
 
 const node = { rx: 10 };
 
 function NodeBox({ x, y, w, h, lines, delay, accent, darkMode }) {
-    const fill = 'rgba(15, 23, 42, 0.65)';
+    const fill = darkMode ? 'rgba(17, 24, 39, 0.88)' : 'rgba(248, 250, 252, 0.95)';
     const primary = lines[0];
     const secondary = lines[1];
 
@@ -30,7 +31,7 @@ function NodeBox({ x, y, w, h, lines, delay, accent, darkMode }) {
                 y={y + h / 2 - (secondary ? 7 : 0)}
                 dominantBaseline="middle"
                 textAnchor="middle"
-                fill="#e2e8f0"
+                fill={darkMode ? '#E2E8F0' : '#0F172A'}
                 fontSize={secondary ? 9.5 : 11}
                 fontWeight="700"
                 fontFamily="system-ui, sans-serif"
@@ -73,13 +74,14 @@ function EdgeLabel({ x, y, text, darkMode }) {
 }
 
 export default function HeroSystemDiagram({ darkMode }) {
+    const t = consoleTokens(darkMode);
     const uid = useId().replace(/:/g, '');
     const solidId = `arr-solid-${uid}`;
     const asyncId = `arr-async-${uid}`;
-    const solid = darkMode ? '#38bdf8' : '#0284c7';
-    const asyncStroke = darkMode ? '#fbbf24' : '#ca8a04';
-    const pulse = darkMode ? '#fcd34d' : '#ca8a04';
-    const accent = darkMode ? '#38bdf8' : '#2563eb';
+    const solid = t.accent;
+    const asyncStroke = darkMode ? '#22D3EE' : '#0891B2';
+    const pulse = darkMode ? '#22D3EE' : t.accent;
+    const accent = t.accent;
 
     return (
         <motion.div
@@ -92,12 +94,12 @@ export default function HeroSystemDiagram({ darkMode }) {
                 maxWidth: '460px',
                 margin: darkMode ? '0' : '0 auto',
                 borderRadius: '20px',
-                padding: '1.1rem 0.9rem 1.15rem',
-                background: darkMode ? 'rgba(30, 41, 59, 0.94)' : '#fafafa',
-                border: darkMode ? '1px solid rgba(148,163,184,0.25)' : '1px solid rgba(148,163,184,0.35)',
-                boxShadow: darkMode
-                    ? '0 0 0 1px rgba(255,255,255,0.04), 0 20px 48px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05)'
-                    : '0 16px 44px rgba(15,23,42,0.1)'
+                padding: '1.15rem 0.95rem 1.2rem',
+                background: darkMode ? `rgba(${t.glassRgb}, 0.72)` : t.surface1,
+                backdropFilter: 'blur(14px)',
+                WebkitBackdropFilter: 'blur(14px)',
+                border: `1px solid ${t.borderSubtle}`,
+                boxShadow: `${t.diagramGlow}, inset 0 1px 0 ${darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.9)'}`
             }}
         >
             <div
@@ -106,7 +108,7 @@ export default function HeroSystemDiagram({ darkMode }) {
                     fontWeight: 800,
                     letterSpacing: '0.11em',
                     textTransform: 'uppercase',
-                    color: darkMode ? '#94a3b8' : '#64748b',
+                    color: t.textSecondary,
                     marginBottom: '0.2rem'
                 }}
             >
@@ -118,7 +120,7 @@ export default function HeroSystemDiagram({ darkMode }) {
                     fontWeight: 700,
                     letterSpacing: '0.08em',
                     textTransform: 'uppercase',
-                    color: darkMode ? '#64748b' : '#94a3b8',
+                    color: t.textMuted,
                     marginBottom: '0.45rem'
                 }}
             >
@@ -128,7 +130,7 @@ export default function HeroSystemDiagram({ darkMode }) {
                 style={{
                     fontSize: '0.7rem',
                     lineHeight: 1.45,
-                    color: darkMode ? '#64748b' : '#64748b',
+                    color: t.textMuted,
                     margin: '0 0 0.55rem',
                     maxWidth: '430px'
                 }}
@@ -215,8 +217,8 @@ export default function HeroSystemDiagram({ darkMode }) {
                 />
 
                 <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
-                    <circle cx="74" cy="28" r="12" fill="rgba(15,23,42,0.55)" stroke={accent} strokeWidth="1.5" />
-                    <text x="74" y="28" dominantBaseline="middle" textAnchor="middle" fill="#e2e8f0" fontSize="7.5" fontWeight="800">
+                    <circle cx="74" cy="28" r="12" fill={darkMode ? 'rgba(6,8,22,0.65)' : 'rgba(248,250,252,0.95)'} stroke={accent} strokeWidth="1.5" />
+                    <text x="74" y="28" dominantBaseline="middle" textAnchor="middle" fill={darkMode ? '#E2E8F0' : '#0F172A'} fontSize="7.5" fontWeight="800">
                         Client
                     </text>
                 </motion.g>
