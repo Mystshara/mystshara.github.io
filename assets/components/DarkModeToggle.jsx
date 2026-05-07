@@ -12,9 +12,7 @@ function DarkModeToggle({ darkMode, toggleDarkMode }) {
                 height: '30px',
                 borderRadius: '15px',
                 border: 'none',
-                background: darkMode 
-                    ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                    : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                background: darkMode ? '#3f3f46' : '#e4e4e7',
                 cursor: 'pointer',
                 position: 'relative',
                 display: 'flex',

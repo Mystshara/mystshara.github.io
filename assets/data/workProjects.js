@@ -18,11 +18,11 @@ const leadConsoleHeroShot = new URL('../images/leadgen.png', import.meta.url).hr
 const fiberHostingHeroShot = new URL('../images/fiberhosting.png', import.meta.url).href;
 
 export const BADGE_STYLES = {
-    Platform: { bg: '#7c3aed', fg: '#f5f3ff' },
+    Platform: { bg: '#52525b', fg: '#fafafa' },
     Infrastructure: { bg: '#059669', fg: '#ecfdf5' },
-    'Security Automation': { bg: '#2563eb', fg: '#eff6ff' },
-    'SaaS Tool': { bg: '#d97706', fg: '#fffbeb' },
-    'Case Study': { bg: '#0891b2', fg: '#ecfeff' },
+    'Security Automation': { bg: '#44403c', fg: '#fafaf9' },
+    'SaaS Tool': { bg: '#b45309', fg: '#fffbeb' },
+    'Case Study': { bg: '#71717a', fg: '#fafafa' },
     'In Progress': { bg: '#64748b', fg: '#f8fafc' }
 };
 

@@ -47,12 +47,12 @@ function About({ darkMode = true }) {
     const cardBorder = darkMode ? '1px solid rgba(51, 65, 85, 0.65)' : '1px solid #e2e8f0';
     const text = darkMode ? '#e2e8f0' : '#334155';
     const muted = darkMode ? '#94a3b8' : '#64748b';
-    const headingColor = darkMode ? '#93c5fd' : '#2563eb';
-    const groupShellBg = darkMode ? 'rgba(2, 6, 23, 0.5)' : '#f1f5f9';
-    const groupShellBorder = darkMode ? '1px solid rgba(71, 85, 105, 0.65)' : '1px solid #e2e8f0';
-    const chipBg = darkMode ? 'rgba(59, 130, 246, 0.12)' : 'rgba(37, 99, 235, 0.06)';
-    const chipBorder = darkMode ? 'rgba(96, 165, 250, 0.28)' : 'rgba(37, 99, 235, 0.2)';
-    const chipText = darkMode ? '#e0f2fe' : '#1e3a5f';
+    const headingColor = darkMode ? '#d4d4d8' : '#3f3f46';
+    const groupShellBg = darkMode ? 'rgba(2, 6, 23, 0.5)' : '#f4f4f5';
+    const groupShellBorder = darkMode ? '1px solid rgba(71, 85, 105, 0.65)' : '1px solid #e4e4e7';
+    const chipBg = darkMode ? 'rgba(63, 63, 70, 0.45)' : '#f4f4f5';
+    const chipBorder = darkMode ? 'rgba(113, 113, 122, 0.45)' : '#d4d4d8';
+    const chipText = darkMode ? '#e4e4e7' : '#27272a';
 
     return (
         <motion.section
@@ -81,11 +81,7 @@ function About({ darkMode = true }) {
                     style={{
                         fontSize: 'clamp(1.85rem, 4vw, 2.5rem)',
                         marginBottom: '0.5rem',
-                        background: darkMode
-                            ? 'linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%)'
-                            : 'linear-gradient(135deg, #4f46e5 0%, #0891b2 100%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
+                        color: darkMode ? '#fafafa' : '#18181b',
                         textAlign: 'center',
                         fontWeight: 800,
                         letterSpacing: '-0.03em'

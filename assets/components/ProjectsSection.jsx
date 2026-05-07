@@ -28,85 +28,33 @@ function primaryButtonShadow(darkMode) {
         : '0 1px 2px rgba(15,23,42,0.06), 0 3px 10px rgba(15,23,42,0.1)';
 }
 
-/** Per-project accent on borders and fills — shadows stay neutral. */
+/** Per-project border accent — flat shells and CTAs (no purple/indigo gradient kit). */
 function projectVisual(slug, darkMode) {
     const E = neutralElevation(darkMode);
-    const themes = {
-        statforge: {
-            heroOverlay: 'linear-gradient(135deg, rgba(124,58,237,0.52) 0%, rgba(59,130,246,0.45) 100%)',
-            /** When a real screenshot is shown: light tie-in + bottom scrim for badges (not a full wash). */
-            heroImageOverlay:
-                'linear-gradient(180deg, rgba(124,58,237,0.12) 0%, transparent 42%, rgba(2,6,23,0.55) 100%)',
-            borderFeatured: darkMode ? '1px solid rgba(167, 139, 250, 0.5)' : '1px solid rgba(99, 102, 241, 0.35)',
-            borderStandard: darkMode ? '1px solid rgba(129, 140, 248, 0.32)' : '1px solid rgba(199, 210, 254, 0.95)',
-            featuredShadow: E.featuredRest,
-            standardShadow: E.standardRest,
-            cardBgFeatured: darkMode
-                ? 'linear-gradient(165deg, rgba(55,35,88,0.98) 0%, rgba(15,23,42,0.93) 52%, rgba(2,6,23,0.97) 100%)'
-                : 'linear-gradient(165deg, #faf5ff 0%, #ffffff 48%, #f8fafc 100%)',
-            cardBgStandard: darkMode
-                ? 'linear-gradient(168deg, rgba(30,41,59,0.78) 0%, rgba(15,23,42,0.92) 100%)'
-                : 'linear-gradient(168deg, #ffffff 0%, #f5f3ff 100%)',
-            caseStudyGradient: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
-            hoverFeatured: E.featuredHover,
-            hoverStandard: E.standardHover
-        },
-        'fiber-hosting': {
-            heroOverlay: 'linear-gradient(135deg, rgba(51,65,85,0.78) 0%, rgba(14,165,233,0.42) 100%)',
-            heroImageOverlay:
-                'linear-gradient(180deg, rgba(14,165,233,0.1) 0%, transparent 42%, rgba(2,6,23,0.52) 100%)',
-            borderFeatured: darkMode ? '1px solid rgba(56, 189, 248, 0.42)' : '1px solid rgba(14, 116, 144, 0.35)',
-            borderStandard: darkMode ? '1px solid rgba(100, 116, 139, 0.55)' : '1px solid rgba(148, 163, 184, 0.65)',
-            featuredShadow: E.featuredRest,
-            standardShadow: E.standardRest,
-            cardBgFeatured: darkMode
-                ? 'linear-gradient(165deg, rgba(30,45,58,0.98) 0%, rgba(15,23,42,0.93) 52%, rgba(2,6,23,0.96) 100%)'
-                : 'linear-gradient(165deg, #f0f9ff 0%, #ffffff 50%, #f8fafc 100%)',
-            cardBgStandard: darkMode
-                ? 'linear-gradient(168deg, rgba(30,41,59,0.72) 0%, rgba(15,23,42,0.94) 100%)'
-                : 'linear-gradient(168deg, #f8fafc 0%, #ecfeff 100%)',
-            caseStudyGradient: 'linear-gradient(135deg, #0e7490 0%, #334155 100%)',
-            hoverFeatured: E.featuredHover,
-            hoverStandard: E.standardHover
-        },
-        'ai-lead-generation': {
-            heroOverlay: 'linear-gradient(135deg, rgba(5,150,105,0.55) 0%, rgba(217,119,6,0.42) 100%)',
-            heroImageOverlay:
-                'linear-gradient(180deg, rgba(5,150,105,0.08) 0%, transparent 42%, rgba(2,6,23,0.55) 100%)',
-            borderFeatured: darkMode ? '1px solid rgba(52, 211, 153, 0.45)' : '1px solid rgba(5, 150, 105, 0.35)',
-            borderStandard: darkMode ? '1px solid rgba(245, 158, 11, 0.28)' : '1px solid rgba(251, 191, 36, 0.55)',
-            featuredShadow: E.featuredRest,
-            standardShadow: E.standardRest,
-            cardBgFeatured: darkMode
-                ? 'linear-gradient(165deg, rgba(25,55,42,0.98) 0%, rgba(15,23,42,0.93) 52%, rgba(2,6,23,0.96) 100%)'
-                : 'linear-gradient(165deg, #ecfdf5 0%, #ffffff 50%, #fffbeb 100%)',
-            cardBgStandard: darkMode
-                ? 'linear-gradient(168deg, rgba(20,45,35,0.55) 0%, rgba(15,23,42,0.92) 100%)'
-                : 'linear-gradient(168deg, #ffffff 0%, #ecfdf5 100%)',
-            caseStudyGradient: 'linear-gradient(135deg, #059669 0%, #b45309 100%)',
-            hoverFeatured: E.featuredHover,
-            hoverStandard: E.standardHover
-        },
-        'security-automation-platform': {
-            heroOverlay: 'linear-gradient(135deg, rgba(220,38,38,0.42) 0%, rgba(124,58,237,0.48) 100%)',
-            heroImageOverlay:
-                'linear-gradient(180deg, rgba(220,38,38,0.08) 0%, transparent 42%, rgba(2,6,23,0.52) 100%)',
-            borderFeatured: darkMode ? '1px solid rgba(248, 113, 113, 0.42)' : '1px solid rgba(190, 24, 93, 0.32)',
-            borderStandard: darkMode ? '1px solid rgba(192, 132, 252, 0.35)' : '1px solid rgba(167, 139, 250, 0.45)',
-            featuredShadow: E.featuredRest,
-            standardShadow: E.standardRest,
-            cardBgFeatured: darkMode
-                ? 'linear-gradient(165deg, rgba(60,25,40,0.98) 0%, rgba(15,23,42,0.93) 52%, rgba(2,6,23,0.96) 100%)'
-                : 'linear-gradient(165deg, #fff1f2 0%, #ffffff 50%, #faf5ff 100%)',
-            cardBgStandard: darkMode
-                ? 'linear-gradient(168deg, rgba(50,20,35,0.5) 0%, rgba(15,23,42,0.94) 100%)'
-                : 'linear-gradient(168deg, #fffbeb 0%, #faf5ff 100%)',
-            caseStudyGradient: 'linear-gradient(135deg, #be123c 0%, #7c3aed 100%)',
-            hoverFeatured: E.featuredHover,
-            hoverStandard: E.standardHover
-        }
+    const featuredBorder = {
+        statforge: darkMode ? 'rgba(212, 212, 216, 0.38)' : '#d4d4d8',
+        'fiber-hosting': darkMode ? 'rgba(161, 161, 170, 0.42)' : '#d4d4d8',
+        'ai-lead-generation': darkMode ? 'rgba(161, 161, 161, 0.38)' : '#d4d4d4',
+        'security-automation-platform': darkMode ? 'rgba(248, 113, 113, 0.42)' : '#fca5a5'
     };
-    return themes[slug] ?? themes.statforge;
+    const edge = featuredBorder[slug] ?? featuredBorder.statforge;
+    const standardEdge = darkMode ? 'rgba(82, 82, 91, 0.55)' : '#e4e4e7';
+    const btnBg = darkMode ? '#3f3f46' : '#27272a';
+    const btnBorder = darkMode ? '1px solid #52525b' : '1px solid #3f3f46';
+
+    return {
+        borderFeatured: `1px solid ${edge}`,
+        borderStandard: `1px solid ${standardEdge}`,
+        featuredShadow: E.featuredRest,
+        standardShadow: E.standardRest,
+        cardBgFeatured: darkMode ? '#27272a' : '#fafafa',
+        cardBgStandard: darkMode ? '#18181b' : '#ffffff',
+        caseStudyBtnBg: btnBg,
+        caseStudyBtnBorder: btnBorder,
+        caseStudyBtnColor: '#fafafa',
+        hoverFeatured: E.featuredHover,
+        hoverStandard: E.standardHover
+    };
 }
 
 const fadeInUp = {
@@ -139,7 +87,9 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
     const chipBg = darkMode ? 'rgba(51, 65, 85, 0.85)' : '#f1f5f9';
     const chipBorder = darkMode ? '#475569' : '#e2e8f0';
     const hasHeroImage = Boolean(project.image);
-    const heroOverlayCss = hasHeroImage && visual.heroImageOverlay ? visual.heroImageOverlay : visual.heroOverlay;
+    const heroOverlayCss = hasHeroImage
+        ? 'linear-gradient(180deg, transparent 0%, transparent 36%, rgba(9, 9, 11, 0.84) 100%)'
+        : 'linear-gradient(180deg, rgba(39, 39, 42, 0.5) 0%, rgba(9, 9, 11, 0.94) 100%)';
 
     const heroTop = (
         <>
@@ -223,7 +173,7 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                         letterSpacing: '0.12em',
                         textTransform: 'uppercase',
                         background: 'rgba(0,0,0,0.45)',
-                        color: '#e0e7ff',
+                        color: '#e4e4e7',
                         border: '1px solid rgba(255,255,255,0.2)'
                     }}
                 >
@@ -357,12 +307,12 @@ function ProjectCard({ project, featured, darkMode, animDelay = 0 }) {
                             gap: '0.35rem',
                             padding: featured ? '0.85rem 1.35rem' : '0.7rem 1.1rem',
                             borderRadius: '11px',
-                            background: visual.caseStudyGradient,
-                            color: 'white',
+                            background: visual.caseStudyBtnBg,
+                            color: visual.caseStudyBtnColor,
                             fontWeight: 800,
                             fontSize: featured ? '0.95rem' : '0.88rem',
                             cursor: 'pointer',
-                            border: '1px solid rgba(255,255,255,0.14)',
+                            border: visual.caseStudyBtnBorder,
                             textDecoration: 'none',
                             textShadow: 'none',
                             boxShadow: primaryButtonShadow(darkMode)
@@ -427,9 +377,7 @@ export default function ProjectsSection() {
     const featured = WORK_PROJECTS.find((p) => p.featured) ?? WORK_PROJECTS[0];
     const others = WORK_PROJECTS.filter((p) => p.slug !== featured.slug);
 
-    const sectionBg = darkMode
-        ? 'linear-gradient(180deg, #111827 0%, #1e293b 40%, #172554 100%)'
-        : 'linear-gradient(180deg, #eef2ff 0%, #f8fafc 45%, #ffffff 100%)';
+    const sectionBg = darkMode ? '#18181b' : '#fafafa';
 
     const heading = darkMode ? '#f8fafc' : '#0f172a';
     const sub = darkMode ? '#94a3b8' : '#64748b';

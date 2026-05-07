@@ -72,7 +72,7 @@ export default function RequestPathStrip({ darkMode }) {
     const titleC = darkMode ? '#f8fafc' : '#0f172a';
     const detailC = darkMode ? '#cbd5e1' : '#64748b';
     const arrow = darkMode ? '#94a3b8' : '#94a3b8';
-    const dotActive = darkMode ? '#a5b4fc' : '#4f46e5';
+    const dotActive = darkMode ? '#fafafa' : '#27272a';
     const dotIdle = darkMode ? '#475569' : '#cbd5e1';
 
     const goTo = useCallback((index) => {

@@ -13,7 +13,7 @@ const fullBleed = {
 function Resume({ darkMode = true }) {
     const sub = darkMode ? '#cbd5e1' : '#475569';
     const muted = darkMode ? '#94a3b8' : '#64748b';
-    const linkColor = darkMode ? '#93c5fd' : '#2563eb';
+    const linkColor = darkMode ? '#d4d4d8' : '#52525b';
 
     const contactInfo = [
         { label: 'Email', value: 'b_l_turner@yahoo.com', link: 'mailto:b_l_turner@yahoo.com' },
@@ -22,9 +22,7 @@ function Resume({ darkMode = true }) {
         { label: 'Portfolio', value: 'mystshara.github.io', link: 'https://mystshara.github.io' }
     ];
 
-    const ctaBg = darkMode
-        ? 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 38%, #312e81 72%, #0f172a 100%)'
-        : 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 45%, #e0e7ff 100%)';
+    const ctaBg = darkMode ? '#18181b' : '#fafafa';
     const ctaBorder = darkMode ? '1px solid rgba(51, 65, 85, 0.65)' : '1px solid rgba(203, 213, 225, 0.95)';
 
     return (
@@ -80,14 +78,14 @@ function Resume({ darkMode = true }) {
                             justifyContent: 'center',
                             padding: '1rem 2.25rem',
                             borderRadius: '999px',
-                            background: 'linear-gradient(180deg, #4f46e5 0%, #4338ca 100%)',
-                            color: '#f8fafc',
+                            background: darkMode ? '#3f3f46' : '#27272a',
+                            color: '#fafafa',
                             textDecoration: 'none',
                             fontWeight: 800,
                             fontSize: '1.02rem',
                             letterSpacing: '-0.01em',
                             textShadow: 'none',
-                            border: '1px solid rgba(255,255,255,0.14)',
+                            border: darkMode ? '1px solid #52525b' : '1px solid #3f3f46',
                             boxShadow: darkMode
                                 ? '0 1px 2px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.35)'
                                 : '0 1px 2px rgba(15,23,42,0.08), 0 4px 14px rgba(15,23,42,0.12)'

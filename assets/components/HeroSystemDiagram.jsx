@@ -77,8 +77,8 @@ export default function HeroSystemDiagram({ darkMode }) {
     const solidId = `arr-solid-${uid}`;
     const asyncId = `arr-async-${uid}`;
     const solid = darkMode ? '#38bdf8' : '#0284c7';
-    const asyncStroke = darkMode ? '#a78bfa' : '#7c3aed';
-    const pulse = darkMode ? '#a78bfa' : '#6366f1';
+    const asyncStroke = darkMode ? '#fbbf24' : '#ca8a04';
+    const pulse = darkMode ? '#fcd34d' : '#ca8a04';
     const accent = darkMode ? '#38bdf8' : '#2563eb';
 
     return (
@@ -93,9 +93,7 @@ export default function HeroSystemDiagram({ darkMode }) {
                 margin: darkMode ? '0' : '0 auto',
                 borderRadius: '20px',
                 padding: '1.1rem 0.9rem 1.15rem',
-                background: darkMode
-                    ? 'linear-gradient(145deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.45) 100%)'
-                    : 'linear-gradient(145deg, #ffffff 0%, #e0e7ff 100%)',
+                background: darkMode ? 'rgba(30, 41, 59, 0.94)' : '#fafafa',
                 border: darkMode ? '1px solid rgba(148,163,184,0.25)' : '1px solid rgba(148,163,184,0.35)',
                 boxShadow: darkMode
                     ? '0 0 0 1px rgba(255,255,255,0.04), 0 20px 48px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05)'

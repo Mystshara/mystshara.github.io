@@ -57,9 +57,9 @@ function Section({ title, children, darkMode, noBorder = false, contentWidth = '
 }
 
 function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
-    const bg = darkMode ? 'linear-gradient(165deg, #020617 0%, #0f172a 55%, #111827 100%)' : 'linear-gradient(165deg, #0f172a 0%, #1e293b 100%)';
-    const fg = '#f1f5f9';
-    const quoteColor = darkMode ? '#cbd5e1' : '#e2e8f0';
+    const bg = darkMode ? '#27272a' : '#f4f4f5';
+    const fg = darkMode ? '#f1f5f9' : '#18181b';
+    const quoteColor = darkMode ? '#cbd5e1' : '#52525b';
 
     return (
         <motion.section
@@ -71,7 +71,7 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                 margin: '0 0 2.75rem',
                 padding: 'clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2.25rem)',
                 borderRadius: '18px',
-                background: darkMode ? bg : 'linear-gradient(165deg, #1e293b 0%, #334155 100%)',
+                background: darkMode ? bg : '#f4f4f5',
                 border: darkMode ? '1px solid rgba(71, 85, 105, 0.85)' : '1px solid rgba(148, 163, 184, 0.35)',
                 boxShadow: darkMode ? '0 18px 48px rgba(0,0,0,0.45)' : '0 12px 36px rgba(15,23,42,0.15)'
             }}
@@ -82,7 +82,7 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                     fontWeight: 800,
                     letterSpacing: '0.14em',
                     textTransform: 'uppercase',
-                    color: darkMode ? '#a5b4fc' : '#c7d2fe',
+                    color: darkMode ? '#a1a1aa' : '#71717a',
                     margin: '0 0 1.25rem'
                 }}
             >
@@ -110,7 +110,7 @@ function StatForgeDifferenceBlock({ lines, quote, darkMode }) {
                     style={{
                         margin: 0,
                         padding: '1rem 0 0 1.1rem',
-                        borderLeft: '4px solid #818cf8',
+                        borderLeft: '4px solid #71717a',
                         fontSize: '1.05rem',
                         lineHeight: 1.65,
                         color: quoteColor,
@@ -195,10 +195,10 @@ export default function CaseStudyPage() {
                 <Link
                     to="/"
                     style={{
-                        color: '#60a5fa',
+                        color: darkMode ? '#d4d4d8' : '#52525b',
                         fontWeight: 600,
                         textDecoration: 'none',
-                        borderBottom: '2px solid rgba(96,165,250,0.4)'
+                        borderBottom: darkMode ? '2px solid rgba(212,212,216,0.35)' : '2px solid rgba(82,82,91,0.28)'
                     }}
                 >
                     ← Back to home
@@ -213,9 +213,7 @@ export default function CaseStudyPage() {
     const contentMax = isStatForge ? '880px' : '820px';
     const showScreenshots = !cs.hideScreenshots && Array.isArray(project.screenshots) && project.screenshots.length > 0;
 
-    const pageBg = darkMode
-        ? 'linear-gradient(180deg, #020617 0%, #0f172a 35%, #111827 100%)'
-        : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #f1f5f9 100%)';
+    const pageBg = darkMode ? '#0f172a' : '#fafafa';
 
     const heroLifecycle = isStatForge && cs.showStatForgeLifecycle;
 
@@ -243,7 +241,7 @@ export default function CaseStudyPage() {
                     style={{
                         display: 'inline-block',
                         marginBottom: '1.75rem',
-                        color: darkMode ? '#93c5fd' : '#2563eb',
+                        color: darkMode ? '#d4d4d8' : '#52525b',
                         fontWeight: 600,
                         textDecoration: 'none',
                         fontSize: '0.95rem'
@@ -592,7 +590,7 @@ export default function CaseStudyPage() {
                         <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
                             {cs.links.map((l) => (
                                 <li key={l.href} style={{ marginBottom: '0.5rem' }}>
-                                    <a href={l.href} target="_blank" rel="noopener noreferrer" style={{ color: darkMode ? '#93c5fd' : '#2563eb', fontWeight: 600 }}>
+                                    <a href={l.href} target="_blank" rel="noopener noreferrer" style={{ color: darkMode ? '#d4d4d8' : '#52525b', fontWeight: 600 }}>
                                         {l.label}
                                     </a>
                                 </li>

@@ -39,8 +39,7 @@ function HeroSection({ darkMode }) {
                         position: 'absolute',
                         inset: '-40% -20% auto -20%',
                         height: '70%',
-                        background:
-                            'radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.35) 0%, rgba(56,189,248,0.12) 42%, transparent 70%)',
+                        background: 'radial-gradient(ellipse at 50% 0%, rgba(63,63,70,0.22) 0%, transparent 62%)',
                         pointerEvents: 'none'
                     }}
                 />
@@ -124,9 +123,9 @@ function HeroSection({ darkMode }) {
                                     fontWeight: 800,
                                     fontSize: '0.92rem',
                                     textDecoration: 'none',
-                                    color: '#fff',
-                                    background: 'linear-gradient(180deg, #4f46e5 0%, #4338ca 100%)',
-                                    border: '1px solid rgba(255,255,255,0.14)',
+                                    color: '#fafafa',
+                                    background: darkMode ? '#3f3f46' : '#27272a',
+                                    border: darkMode ? '1px solid #52525b' : '1px solid #3f3f46',
                                     boxShadow: darkMode
                                         ? '0 1px 2px rgba(0,0,0,0.4), 0 3px 10px rgba(0,0,0,0.3)'
                                         : '0 1px 2px rgba(15,23,42,0.08), 0 3px 10px rgba(15,23,42,0.1)'
@@ -144,9 +143,7 @@ function HeroSection({ darkMode }) {
 }
 
 function HomePage({ darkMode }) {
-    const pageBg = darkMode
-        ? 'linear-gradient(180deg, #020617 0%, #0f172a 18%, #0f172a 55%, #111827 100%)'
-        : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 35%, #f1f5f9 100%)';
+    const pageBg = darkMode ? '#0f172a' : '#fafafa';
 
     return (
         <div style={{ background: pageBg, minHeight: '100vh' }}>
