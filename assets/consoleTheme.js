@@ -32,6 +32,8 @@ export function consoleTokens(darkMode) {
             shadowCard: '0 10px 30px rgba(0, 0, 0, 0.35)',
             shadowLift: '0 20px 44px rgba(0, 0, 0, 0.45)',
             shadowAccent: '0 18px 42px rgba(79, 140, 255, 0.14)',
+            /** Primary CTA — depth without accent bloom */
+            shadowButtonPrimary: '0 2px 8px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35)',
             diagramGlow: '0 0 48px rgba(79, 140, 255, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4)'
         };
     }
@@ -62,6 +64,7 @@ export function consoleTokens(darkMode) {
         shadowCard: '0 10px 36px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04)',
         shadowLift: '0 20px 48px rgba(15, 23, 42, 0.12)',
         shadowAccent: '0 16px 40px rgba(59, 130, 246, 0.12)',
+        shadowButtonPrimary: '0 2px 8px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04)',
         diagramGlow: '0 12px 40px rgba(59, 130, 246, 0.1), 0 4px 16px rgba(15, 23, 42, 0.06)'
     };
 }

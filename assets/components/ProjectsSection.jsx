@@ -40,11 +40,9 @@ function projectSurfaces(tokens, darkMode, featured) {
         shadowRest: E.rest,
         shadowHover: E.hover,
         caseStudyBtnBg: tokens.accent,
-        caseStudyBtnBorder: `1px solid rgba(${tokens.accentRgb}, 0.42)`,
+        caseStudyBtnBorder: `1px solid rgba(${tokens.accentRgb}, 0.28)`,
         caseStudyBtnColor: '#F8FAFC',
-        primaryBtnShadow: darkMode
-            ? `0 4px 18px rgba(${tokens.accentRgb}, 0.22), 0 2px 8px rgba(0,0,0,0.35)`
-            : `0 6px 22px rgba(${tokens.accentRgb}, 0.28), 0 2px 8px rgba(15,23,42,0.06)`
+        primaryBtnShadow: tokens.shadowButtonPrimary
     };
 }
 

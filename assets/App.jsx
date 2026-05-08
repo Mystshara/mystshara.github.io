@@ -115,10 +115,8 @@ function HeroSection({ darkMode }) {
                                     textDecoration: 'none',
                                     color: '#F8FAFC',
                                     background: t.accent,
-                                    border: `1px solid rgba(${t.accentRgb}, 0.45)`,
-                                    boxShadow: darkMode
-                                        ? `0 8px 28px rgba(${t.accentRgb}, 0.28), 0 2px 8px rgba(0,0,0,0.35)`
-                                        : `0 8px 28px rgba(${t.accentRgb}, 0.35), 0 2px 8px rgba(15,23,42,0.06)`,
+                                    border: `1px solid rgba(${t.accentRgb}, 0.28)`,
+                                    boxShadow: t.shadowButtonPrimary,
                                     transition: 'box-shadow 0.25s ease'
                                 }}
                             >

@@ -89,10 +89,8 @@ function Resume({ darkMode = true }) {
                             fontWeight: 800,
                             fontSize: '1.05rem',
                             letterSpacing: '-0.01em',
-                            border: `1px solid rgba(${t.accentRgb}, 0.45)`,
-                            boxShadow: darkMode
-                                ? `0 10px 36px rgba(${t.accentRgb}, 0.28), 0 4px 14px rgba(0,0,0,0.45)`
-                                : `0 10px 36px rgba(${t.accentRgb}, 0.35), 0 4px 14px rgba(15,23,42,0.08)`
+                            border: `1px solid rgba(${t.accentRgb}, 0.28)`,
+                            boxShadow: t.shadowButtonPrimary
                         }}
                     >
                         Talk to me about your system

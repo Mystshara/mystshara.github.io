@@ -24,8 +24,8 @@ function DarkModeToggle({ darkMode, toggleDarkMode }) {
                 alignItems: 'center',
                 padding: '0 4px',
                 boxShadow: darkMode
-                    ? `0 4px 18px rgba(0, 0, 0, 0.35), 0 0 20px rgba(${t.accentRgb}, 0.08), inset 0 1px 0 rgba(255,255,255,0.05)`
-                    : '0 4px 14px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.95)'
+                    ? '0 2px 10px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.05)'
+                    : '0 2px 10px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.95)'
             }}
         >
             <motion.div
