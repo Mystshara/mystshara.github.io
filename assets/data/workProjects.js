@@ -178,11 +178,7 @@ export const WORK_PROJECTS = [
         image: leadConsoleHeroShot,
         demoLink: 'https://lead.fiberhostingservices.com/',
         repoLink: null,
-        screenshots: [
-            leadConsoleHeroShot,
-            'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&h=600&fit=crop',
-            'https://images.unsplash.com/photo-1504639725590-04d09842dc99?w=1200&h=600&fit=crop'
-        ],
+        screenshots: [leadConsoleHeroShot],
         caseStudy: {
             summary:
                 'This is the strongest “business + engineering” proof: turning probabilistic models into a dependable workflow with measurable outcomes.',

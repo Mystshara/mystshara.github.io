@@ -8,6 +8,7 @@ import ProjectsSection from './components/ProjectsSection';
 import CaseStudyPage from './components/CaseStudyPage';
 import HeroSystemDiagram from './components/HeroSystemDiagram';
 import BuiltProofSection from './components/BuiltProofSection';
+import HostingMigrationNotice from './components/HostingMigrationNotice';
 import { PortfolioThemeContext } from './themeContext';
 import { consoleTokens } from './consoleTheme';
 
@@ -185,12 +186,14 @@ function App() {
                     position: 'relative'
                 }}
             >
+                <HostingMigrationNotice />
+
                 <div
                     style={{
                         position: 'fixed',
-                        top: '2rem',
-                        right: '2rem',
-                        zIndex: 1000
+                        top: '0.85rem',
+                        right: 'clamp(1rem, 4vw, 2rem)',
+                        zIndex: 1200
                     }}
                 >
                     <DarkModeToggle darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
