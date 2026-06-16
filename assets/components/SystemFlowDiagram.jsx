@@ -4,9 +4,15 @@ import RequestPathStrip from './RequestPathStrip';
 
 /**
  * Case-study request path: horizontal card strip (readable, no SVG scale issues).
- * @param {boolean} softVisual — kept for API compatibility; strip uses neutral borders only.
+ * @param {boolean} softVisual - kept for API compatibility; strip uses neutral borders only.
  */
-export default function SystemFlowDiagram({ darkMode, softVisual: _softVisual = false }) {
+export default function SystemFlowDiagram({
+    darkMode,
+    softVisual: _softVisual = false,
+    steps,
+    title = 'Request path (production)',
+    note = 'Read traffic stays on the API + primary row; heavy work is queued to workers and written back asynchronously.'
+}) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -32,11 +38,11 @@ export default function SystemFlowDiagram({ darkMode, softVisual: _softVisual = 
                     textTransform: 'uppercase'
                 }}
             >
-                Request path (production)
+                {title}
             </div>
-            <RequestPathStrip darkMode={darkMode} />
+            <RequestPathStrip darkMode={darkMode} steps={steps} />
             <p style={{ margin: '0.75rem 0 0', fontSize: '0.82rem', lineHeight: 1.55, color: darkMode ? '#cbd5e1' : '#64748b', maxWidth: '48rem' }}>
-                Read traffic stays on the API + primary row; heavy work is queued to workers and written back asynchronously.
+                {note}
             </p>
         </motion.div>
     );

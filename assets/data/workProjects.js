@@ -169,49 +169,68 @@ export const WORK_PROJECTS = [
     {
         slug: 'ai-lead-generation',
         title: 'Lead Console',
-        subtitle: 'Lead capture and routing (Fiber Hosting Services)',
+        subtitle: 'Hiring-signal intelligence for recruiter outreach',
         proofBadge: 'SaaS Tool',
         description:
-            'Production SaaS workflow for lead intake, evaluation, and handoff: cost controls, durable jobs, and UX that turns model-assisted output into something sales can act on.',
+            'A recruiter-facing lead intelligence system that ingests public careers and ATS pages, detects hiring intent with deterministic rules, deduplicates company opportunities, and ranks leads by outreach priority.',
         icon: '🎯',
-        tech: ['Python', 'LLM APIs', 'PostgreSQL', 'Background jobs', 'Product UX'],
+        tech: ['React', 'FastAPI', 'Python', 'PostgreSQL', 'Redis', 'Web ingestion', 'Deterministic scoring'],
         image: leadConsoleHeroShot,
         demoLink: 'https://lead.fiberhostingservices.com/',
         repoLink: null,
         screenshots: [leadConsoleHeroShot],
         caseStudy: {
             summary:
-                'This is the strongest “business + engineering” proof: turning probabilistic models into a dependable workflow with measurable outcomes.',
+                'Lead Console helps recruiting and outreach teams answer a practical question: which companies are actively hiring for roles we care about, and which ones are worth contacting first? The system ingests public careers and ATS pages, extracts hiring signals, deduplicates company-level opportunities, scores intent, and routes leads through a human review workflow. The core signal logic is deterministic and explainable, not hidden behind a black box.',
             whatItIs:
-                'A SaaS-style lead generation workflow that combines retrieval, structured prompting, human-in-the-loop review hooks, and export integrations. Built like a product, not a notebook experiment.',
+                'A lead-intelligence platform for recruiters and recruiting teams. Users can submit a company, careers page, or job-board URL, then the system analyzes the page for hiring signals: engineering role density, infrastructure keywords, ATS identity, employer slug, careers-page confidence, transformation language, and contact intent. The output is a ranked lead queue with evidence, outreach context, review status, and workflow actions.',
             problem:
-                'LLM demos impress; products disappoint when outputs drift, costs spike, and users cannot trust results enough to act. The real work is evaluation, guardrails, and operational visibility.',
-            architecture: `UI / integrations
-        │
-        ▼
-┌─────────────────────┐
-│ orchestration layer│
-│ (state, retries)   │
-└─────────┬───────────┘
-          │
-    ┌─────┴─────┐
-    ▼           ▼
-┌────────┐  ┌──────────────┐
-│ LLM    │  │ workers + DB │
-│ providers│ │ (audit trail)│
-└────────┘  └──────────────┘`,
+                'Recruiters do not just need company names. They need timing and intent. A company hiring platform, infrastructure, SRE, DevOps, cloud, security, or backend roles is publicly signaling growth, delivery pressure, or internal scaling pain. Lead Console turns messy public hiring data into a prioritized outreach workflow.',
+            diagramTitle: 'Lead scoring pipeline',
+            diagramSteps: [
+                { title: 'React console', detail: 'Queue, filters, lead detail' },
+                { title: 'FastAPI API', detail: 'Auth, ingest, dedupe, workflow' },
+                { title: 'Postgres', detail: 'Leads, JSONB enrichment, audit' },
+                { title: 'Redis queue', detail: 'RPUSH and BLPOP events' },
+                { title: 'Python worker', detail: 'Scoring, signals, contact intent' },
+                { title: 'Postgres', detail: 'Scored lead and events' }
+            ],
+            diagramNote:
+                'Ingest stays request-driven. Heavy scoring work is queued through Redis and written back by workers so the review console can keep moving.',
+            architectureIntro:
+                'A submitted URL enters the API, gets normalized and SSRF-validated, then is fetched and reduced into lead enrichment. The API stores or merges the company opportunity, publishes a scoring event, and the worker writes deterministic signals back to Postgres for the review console.',
+            hideArchitectureBlock: true,
+            architecture: `React Lead Console
+        |
+        v
+FastAPI API ---------------------> Public careers / ATS pages
+        |
+        v
+Postgres
+        |
+        v
+Redis lead_events queue
+        |
+        v
+Python Worker
+        |
+        v
+Postgres`,
             stackNotes:
-                'Python services for orchestration, PostgreSQL for durable state and auditability, background workers for throughput, and pragmatic LLM provider boundaries (timeouts, budgets, structured outputs).',
+                'React powers the lead review console. FastAPI handles auth, ingest, careers-page discovery, dedupe, workflow actions, scoring queue publication, and CSV export. PostgreSQL is the source of truth for leads, enrichment JSONB, users, sessions, and audit events. Redis provides a simple FIFO queue using RPUSH and BLPOP. Python workers process scoring and outreach context asynchronously. Public web ingestion is defensive: URL normalization, SSRF validation, retries and backoff, domain cooldowns after rate limits, structured upstream error mapping, and generic extraction when page markup changes.',
             personalBuild: [
-                'Designed the end-to-end job model: enqueue, partial progress, cancellation, and idempotent retries.',
-                'Built evaluation harnesses so prompt/model changes could be compared without regressing silently.',
-                'Implemented cost and rate protections so production traffic could not burn budget unpredictably.',
-                'Shipped UX that made “uncertain model output” reviewable and actionable for real users.'
+                'Designed the intake pipeline for public careers and ATS URLs, including URL normalization, SSRF validation, page fetching, boilerplate stripping, metadata extraction, and enrichment storage.',
+                'Built deterministic scoring rules for hiring intent, role-family signals, ATS identity, repeated engineering titles, infrastructure keywords, page confidence, and transformation language.',
+                'Implemented company-level deduplication across exact URLs, registrable domains, website hosts, emails, company/contact identity, and multi-tenant ATS boards like Lever, Greenhouse, Ashby, and Workable.',
+                'Built the async scoring flow with Redis and Python workers so ingestion can queue scoring work and keep the UI responsive.',
+                'Shipped the recruiter workflow surface: ranked leads, filters, lead detail evidence, contact intent, review status, outreach actions, and CSV export.'
             ],
             technicalChallenges: [
-                'Making outputs structured enough for downstream CRM/automation without fighting the model on every edge case.',
-                'Handling provider latency spikes without wedging the whole pipeline.',
-                'Building trust: users need explanations and provenance, not black-box magic.'
+                'Dedupe had to be conservative. Two Ashby or Greenhouse URLs may share the same host but belong to completely different companies, so the system compares ATS board identity and employer slugs instead of blindly merging by domain.',
+                'The scoring needed to stay explainable. Recruiters need to know why a company is worth contacting, so the system preserves keywords, evidence, enrichment data, contact-intent reasoning, and audit events.',
+                'Public web ingestion is unreliable by nature. The system has to handle 403s, 404s, 429s, timeouts, changed markup, thin pages, ATS redirects, and repeated re-ingests without corrupting lead identity.',
+                'The product is company/opportunity-centric, not job-posting-centric. Multiple job URLs for the same company collapse into one lead while preserving merged source URLs and combined signal evidence.',
+                'Scaling would require pagination, stronger database constraints, indexed workflow filters, durable queue recovery, scheduled re-crawls, and normalized lead-signal columns promoted out of JSONB where query volume justifies it.'
             ],
             links: [{ href: 'https://lead.fiberhostingservices.com/', label: 'Live product (Lead Console)' }]
         }

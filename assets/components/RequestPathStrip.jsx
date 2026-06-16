@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { motion } from 'framer-motion';
 import { consoleTokens } from '../consoleTheme';
 
-/** Same logical path — carousel scrolls the inner track (not window). */
-const STEPS = [
+/** Same logical path: carousel scrolls the inner track (not window). */
+const DEFAULT_STEPS = [
     { title: 'Client', detail: null },
     { title: 'NGINX / Ingress', detail: 'Controller' },
     { title: 'API service', detail: 'FastAPI / .NET · replicas' },
@@ -62,7 +62,8 @@ function scrollCardToCenter(scroller, card) {
     scroller.scrollBy({ left: delta, behavior: 'smooth' });
 }
 
-export default function RequestPathStrip({ darkMode }) {
+export default function RequestPathStrip({ darkMode, steps: customSteps }) {
+    const steps = Array.isArray(customSteps) && customSteps.length > 0 ? customSteps : DEFAULT_STEPS;
     const t = consoleTokens(darkMode);
     const scrollerRef = useRef(null);
     const cardRefs = useRef([]);
@@ -78,7 +79,7 @@ export default function RequestPathStrip({ darkMode }) {
     const dotIdle = darkMode ? 'rgba(148, 163, 184, 0.35)' : t.borderSubtle;
 
     const goTo = useCallback((index) => {
-        const i = Math.max(0, Math.min(STEPS.length - 1, index));
+        const i = Math.max(0, Math.min(steps.length - 1, index));
         setActive(i);
         const scroller = scrollerRef.current;
         const card = cardRefs.current[i];
@@ -89,10 +90,10 @@ export default function RequestPathStrip({ darkMode }) {
                 suppressObserver.current = false;
             }, 450);
         });
-    }, []);
+    }, [steps.length]);
 
     const atStart = active === 0;
-    const atEnd = active === STEPS.length - 1;
+    const atEnd = active === steps.length - 1;
 
     const prev = useCallback(() => {
         if (!atStart) goTo(active - 1);
@@ -106,7 +107,7 @@ export default function RequestPathStrip({ darkMode }) {
         const root = scrollerRef.current;
         if (!root) return undefined;
 
-        const cards = STEPS.map((_, i) => cardRefs.current[i]).filter(Boolean);
+        const cards = steps.map((_, i) => cardRefs.current[i]).filter(Boolean);
         if (cards.length === 0) return undefined;
 
         const obs = new IntersectionObserver(
@@ -128,7 +129,13 @@ export default function RequestPathStrip({ darkMode }) {
 
         cards.forEach((el) => obs.observe(el));
         return () => obs.disconnect();
-    }, []);
+    }, [steps]);
+
+    useEffect(() => {
+        if (active > steps.length - 1) {
+            setActive(0);
+        }
+    }, [active, steps.length]);
 
     /* Initial center after layout (refs + flex widths ready) */
     useLayoutEffect(() => {
@@ -198,7 +205,7 @@ export default function RequestPathStrip({ darkMode }) {
                         scrollPaddingRight: '0.5rem'
                     }}
                 >
-                    {STEPS.map((step, i) => (
+                    {steps.map((step, i) => (
                         <React.Fragment key={`step-${i}`}>
                             <div
                                 ref={(el) => {
@@ -206,7 +213,7 @@ export default function RequestPathStrip({ darkMode }) {
                                 }}
                                 role="group"
                                 aria-roledescription="slide"
-                                aria-label={`Step ${i + 1} of ${STEPS.length}: ${step.title}`}
+                                aria-label={`Step ${i + 1} of ${steps.length}: ${step.title}`}
                                 aria-current={i === active ? 'true' : undefined}
                                 style={{
                                     flex: '0 0 auto',
@@ -239,7 +246,7 @@ export default function RequestPathStrip({ darkMode }) {
                                     ) : null}
                                 </motion.div>
                             </div>
-                        {i < STEPS.length - 1 ? (
+                        {i < steps.length - 1 ? (
                             <span
                                 aria-hidden
                                 style={{
@@ -274,7 +281,7 @@ export default function RequestPathStrip({ darkMode }) {
                     flexWrap: 'wrap'
                 }}
             >
-                {STEPS.map((_, i) => (
+                {steps.map((_, i) => (
                     <button
                         key={`dot-${i}`}
                         type="button"

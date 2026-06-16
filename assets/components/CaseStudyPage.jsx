@@ -373,7 +373,7 @@ export default function CaseStudyPage() {
                             <p style={{ margin: '0 0 1.1rem', color: muted, fontSize: '0.98rem', lineHeight: 1.65, maxWidth: '42rem' }}>
                                 Vertical flow: how synchronous reads and async writes move through the platform. The ASCII block below is the same boundary in compact form.
                             </p>
-                            <SystemFlowDiagram darkMode={darkMode} />
+                            <SystemFlowDiagram darkMode={darkMode} steps={cs.diagramSteps} title={cs.diagramTitle} note={cs.diagramNote} />
                             <p style={{ margin: '1rem 0 0.45rem', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: muted }}>
                                 System boundary (simplified)
                             </p>
@@ -473,7 +473,9 @@ export default function CaseStudyPage() {
 
                         <Section title="Architecture (high level)" darkMode={darkMode} contentWidth="column">
                             <p style={{ margin: '0 0 1rem', color: muted, fontSize: '0.95rem', maxWidth: '42rem' }}>
-                                {cs.showStatForgeLifecycle ? (
+                                {cs.architectureIntro ? (
+                                    cs.architectureIntro
+                                ) : cs.showStatForgeLifecycle ? (
                                     <>
                                         Two views: the lifecycle above is how noisy inputs become a verified record. The schematic below is how clients and workers touch the
                                         platform (read path vs async work). Diagrams are intentionally schematic; swap in your own from Excalidraw, Mermaid, or cloud consoles when
@@ -485,23 +487,25 @@ export default function CaseStudyPage() {
                                     </>
                                 )}
                             </p>
-                            <SystemFlowDiagram darkMode={darkMode} />
-                            <pre
-                                style={{
-                                    margin: 0,
-                                    padding: '1.25rem 1rem',
-                                    borderRadius: '12px',
-                                    background: darkMode ? '#020617' : '#f1f5f9',
-                                    color: darkMode ? '#e2e8f0' : '#0f172a',
-                                    fontSize: '0.78rem',
-                                    lineHeight: 1.45,
-                                    overflow: 'auto',
-                                    border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0',
-                                    fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace"
-                                }}
-                            >
-                                {cs.architecture}
-                            </pre>
+                            <SystemFlowDiagram darkMode={darkMode} steps={cs.diagramSteps} title={cs.diagramTitle} note={cs.diagramNote} />
+                            {!cs.hideArchitectureBlock ? (
+                                <pre
+                                    style={{
+                                        margin: 0,
+                                        padding: '1.25rem 1rem',
+                                        borderRadius: '12px',
+                                        background: darkMode ? '#020617' : '#f1f5f9',
+                                        color: darkMode ? '#e2e8f0' : '#0f172a',
+                                        fontSize: '0.78rem',
+                                        lineHeight: 1.45,
+                                        overflow: 'auto',
+                                        border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0',
+                                        fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace"
+                                    }}
+                                >
+                                    {cs.architecture}
+                                </pre>
+                            ) : null}
                         </Section>
 
                         <Section title="Stack & integration points" darkMode={darkMode}>
