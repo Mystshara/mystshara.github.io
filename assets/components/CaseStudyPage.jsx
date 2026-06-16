@@ -371,29 +371,43 @@ export default function CaseStudyPage() {
 
                         <Section title="Architecture (high level)" darkMode={darkMode} contentWidth="column">
                             <p style={{ margin: '0 0 1.1rem', color: muted, fontSize: '0.98rem', lineHeight: 1.65, maxWidth: '42rem' }}>
-                                Vertical flow: how synchronous reads and async writes move through the platform. The ASCII block below is the same boundary in compact form.
+                                {cs.architectureIntro ??
+                                    'Vertical flow: how synchronous reads and async writes move through the platform. The ASCII block below is the same boundary in compact form.'}
                             </p>
                             <SystemFlowDiagram darkMode={darkMode} steps={cs.diagramSteps} title={cs.diagramTitle} note={cs.diagramNote} />
-                            <p style={{ margin: '1rem 0 0.45rem', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: muted }}>
-                                System boundary (simplified)
-                            </p>
-                            <pre
-                                style={{
-                                    margin: 0,
-                                    padding: '0.85rem 0.75rem',
-                                    borderRadius: '10px',
-                                    background: darkMode ? 'rgba(2, 6, 23, 0.75)' : '#f1f5f9',
-                                    color: darkMode ? '#e8edf4' : '#475569',
-                                    fontSize: '0.74rem',
-                                    lineHeight: 1.45,
-                                    overflow: 'auto',
-                                    border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0',
-                                    fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace",
-                                    opacity: 1
-                                }}
-                            >
-                                {cs.architecture}
-                            </pre>
+                            {!cs.hideArchitectureBlock ? (
+                                <>
+                                    <p
+                                        style={{
+                                            margin: '1rem 0 0.45rem',
+                                            fontSize: '0.7rem',
+                                            fontWeight: 800,
+                                            letterSpacing: '0.1em',
+                                            textTransform: 'uppercase',
+                                            color: muted
+                                        }}
+                                    >
+                                        System boundary (simplified)
+                                    </p>
+                                    <pre
+                                        style={{
+                                            margin: 0,
+                                            padding: '0.85rem 0.75rem',
+                                            borderRadius: '10px',
+                                            background: darkMode ? 'rgba(2, 6, 23, 0.75)' : '#f1f5f9',
+                                            color: darkMode ? '#e8edf4' : '#475569',
+                                            fontSize: '0.74rem',
+                                            lineHeight: 1.45,
+                                            overflow: 'auto',
+                                            border: darkMode ? '1px solid #1e293b' : '1px solid #e2e8f0',
+                                            fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace",
+                                            opacity: 1
+                                        }}
+                                    >
+                                        {cs.architecture}
+                                    </pre>
+                                </>
+                            ) : null}
                         </Section>
 
                         <Section title="Stack & integration points" darkMode={darkMode}>

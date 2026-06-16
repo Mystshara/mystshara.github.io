@@ -22,18 +22,21 @@ export const WORK_PROJECTS = [
         slug: 'statforge',
         featured: true,
         title: 'StatForge',
-        subtitle: 'Verification and data platform for competitive match outcomes (StatForge.gg)',
+        subtitle: 'Competitive gaming data platform for verified matches, leaderboards, and developer APIs',
         proofBadge: 'Platform',
         description:
-            'Integrate once, read consistent results everywhere: a public API on top of a reconciliation engine that turns noisy inputs into one verified match record.',
+            'A competitive gaming data platform that reconciles raw tracker activity, scheduled events, reports, and operator review into canonical match records, verified leaderboards, public player pages, and scoped developer APIs.',
         icon: '📊',
         tech: [
-            'PostgreSQL (system of record)',
-            'Python (services + workers)',
-            'Redis (queue + broker)',
-            'Kubernetes (runtime)',
-            'Public API design (read model contract)',
-            'Review workflows (verification system)'
+            'Next.js',
+            'ASP.NET',
+            'Fastify',
+            'Node worker',
+            'MySQL',
+            'PostgreSQL',
+            'Docker',
+            'GitHub Actions',
+            'GameTools API'
         ],
         /* Bundled asset: thum.io previews often fail as CSS backgrounds in dev/production. */
         image: statforgeLifecycleShot,
@@ -42,69 +45,90 @@ export const WORK_PROJECTS = [
         screenshots: [statforgeLifecycleShot],
         caseStudy: {
             summary:
-                'StatForge is a clean external product: verified match outcomes your integrations can rely on. Under that surface is the platform work that makes “one match, one record, one version of truth” real: schema evolution, auth boundaries, background processing, and review workflows that stay coherent as the product grows.',
+                'StatForge is a competitive gaming data platform focused on creating authoritative player, team, and match data. It started with Battlefield 6 tracking, but the larger product is a platform that can reconcile multiple data sources into verified records, leaderboards, and developer APIs. The core idea is simple: raw game stats are useful, but they are not enough. StatForge separates ingestion, processing, validation, and presentation so tracker activity can become trusted platform data only after correlation and review.',
             whatItIs:
-                'A verification and data platform for competitive match outcomes. Tournament platforms, apps, and partners call read endpoints for the same published structure; the hard part is not drawing a chart, it is guaranteeing that every surface agrees on the official result.',
+                'StatForge combines a public reference site, developer portal, platform API, operator review workflow, and BF6 tracker subsystem. Public users can view players, matches, and leaderboards. Integrators use scoped API keys to read curated platform data. Operators use the review surface to validate tracker candidates before they become canonical matches. The tracker subsystem resolves BF6 players by platform and nickname, polls GameTools for multiplayer stats, stores snapshot history, and detects likely new matches from aggregate stat changes.',
             problem:
-                'Most systems still sit on raw stats and best-effort scrapes. That works until sources disagree, match IDs drift across tools, and your team spends cycles reconciling instead of shipping. The product promise is simple: stop wiring fragile stat pipelines and read outcomes you do not have to second-guess.',
+                'External game stats are not tied cleanly to platform identity, and providers do not always expose direct match-ended events. A platform needs stable player identity, continuous polling, historical snapshots, inferred activity, expected-match correlation, staff validation, and a trusted final record. StatForge turns noisy and incomplete signals into verified match records that can power leaderboards, profiles, public pages, and developer APIs.',
             lifecycleHeroTitle: 'From noisy inputs → one verified outcome',
             lifecycleHeroSubtitle:
-                'The path from inconsistent signals to a published record your integrations can trust — before request-path architecture.',
+                'The path from raw tracker activity to a reviewed record your integrations can trust.',
             differencePunchyLines: [
-                'StatForge is not another API.',
-                'It is a verification system.',
-                'Raw signals disagree.',
-                'Stat pipelines drift.',
-                'Teams reconcile instead of shipping.',
-                'StatForge ingests, reconciles, reviews, and publishes a single outcome your system can trust.'
+                'StatForge is not just a stats tracker.',
+                'It is a reconciliation platform.',
+                'Raw game activity is incomplete.',
+                'Display names and identities drift.',
+                'Inferred matches need review before they become truth.',
+                'StatForge resolves identity, detects activity, validates candidates, and publishes canonical records your system can trust.'
             ],
             pullQuote:
-                'The engineering-heavy pieces in this stack — queues, migrations, permissions, performance — exist to protect that contract under real traffic and real operators.',
+                'The hardest platform problem was deciding when inferred activity becomes verified truth.',
             hideScreenshots: false,
             showStatForgeLifecycle: true,
-            architecture: `Integrators (apps, sites, partners)
-        │
-        ▼
-┌────────────────────┐     ┌──────────────────────────┐
-│ Public read API    │     │ Ingestion + signals      │
-│ (stable shapes)    │     │ (imports, webhooks)      │
-└─────────┬──────────┘     └────────────┬─────────────┘
-          │                             │
-          └────────── Core platform: verification state machine,
-                     reconciliation, review, publish canonical match
-                     records + audit trail (Postgres, workers, Redis)
-`,
+            diagramTitle: 'Verified data flow',
+            diagramSteps: [
+                { title: 'Next.js web', detail: 'Public site, portal, review' },
+                { title: 'ASP.NET API', detail: 'Auth, RBAC, matches, keys' },
+                { title: 'MySQL platform', detail: 'Users, identities, canonical records' },
+                { title: 'Tracker API', detail: 'Fastify resolve and reads' },
+                { title: 'Node poller', detail: 'GameTools batch polling' },
+                { title: 'Postgres tracker', detail: 'Snapshots and detected matches' },
+                { title: 'Review', detail: 'Candidates become verified data' }
+            ],
+            diagramNote:
+                'Public and portal traffic goes through the platform API. The tracker is a subsystem for identity resolution, polling, snapshots, and candidate detection.',
+            architectureIntro:
+                'StatForge splits raw tracker data from verified platform data. The tracker resolves players, polls GameTools, stores deduped snapshots, and infers candidate activity. The platform correlates those candidates with scheduled events, reports, linked identities, and operator review before publishing canonical match records, leaderboards, and API output.',
+            hideArchitectureBlock: true,
+            architecture: `apps/web (Next.js)
+Reference site | Marketing | Portal | Operator review
+        |
+        v
+platform-api (ASP.NET)
+Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
+        |
+        +--> MySQL platform DB
+        |    users, identities, matches, results, reviews, apps, keys
+        |
+        +--> tracker-api and tracker-poller
+             Fastify API | Node worker | GameTools
+                    |
+                    v
+             PostgreSQL tracker DB
+             tracked players, snapshots, detected matches`,
             stackNotes:
-                'PostgreSQL holds canonical match records, review state, and audit-friendly history. Redis and workers carry ingestion, reconciliation, and notification paths with explicit retries and operator visibility. Kubernetes runs the services; the public read API is versioned so integrators keep a stable shape while the verification engine evolves behind it.',
+                'The frontend is a Next.js app with marketing pages, public player and leaderboard views, a developer portal, and an operator review area. The ASP.NET platform API owns auth, RBAC, applications, API keys, scopes, canonical matches, leaderboards, and review actions. The tracker subsystem is separate: a Fastify API handles player resolve and latest snapshot reads, while a Node worker polls GameTools and writes time-series snapshots to PostgreSQL. MySQL stores platform users, game identity links, match records, review data, portal applications, API keys, and scopes. Platform routes use cookie sessions for portal users, scoped bearer keys for integrators, and route policy boundaries for customer-key, portal-only, and disabled routes.',
             personalBuild: [
-                'Owned schema and migrations so verification states and publication rules could evolve without breaking existing integrators.',
-                'Implemented job pipelines for ingestion and reconciliation with clear failure semantics (retries, dead letters, operator dashboards).',
-                'Shipped API and auth boundaries so tenants and keys stayed isolated while still supporting partner-style access patterns.',
-                'Worked performance and indexing paths once real match volume and history queries exposed hotspots in the read model.'
+                'Designed the split between raw tracker data and verified platform data so inferred activity does not automatically become a published match.',
+                'Built the player resolve and polling path: identity cache, GameTools lookup, tracked player enrollment, batch polling, raw snapshot storage, hash-based dedupe, and latest snapshot reads.',
+                'Implemented match candidate detection from aggregate stat deltas when the provider does not emit direct match events.',
+                'Built the platform layer around canonical matches, match results, review candidates, linked game identities, leaderboards, portal applications, API keys, and scopes.',
+                'Shipped frontend surfaces across public reference pages, developer portal flows, and operator review.'
             ],
             personalBuildCards: [
                 {
-                    title: 'Schema & migrations',
-                    body: 'Owned verification and publication schema so states and rules could evolve without breaking existing integrators.'
+                    title: 'Identity and polling',
+                    body: 'Built resolve, cache, enroll, poll, snapshot, and hash-dedupe paths around GameTools and stable BF6 persona IDs.'
                 },
                 {
-                    title: 'Async pipelines',
-                    body: 'Built ingestion and reconciliation workers with explicit retries, dead-letter paths, and operator visibility when jobs fail.'
+                    title: 'Event inference',
+                    body: 'Detected candidate matches from aggregate stat deltas when the upstream provider did not emit per-match events.'
                 },
                 {
-                    title: 'API + auth boundaries',
-                    body: 'Shipped tenant-safe APIs and keys so reads and partner-style access stayed isolated from production data paths.'
+                    title: 'Review workflow',
+                    body: 'Separated tracker candidates from canonical matches so operators validate activity before it reaches leaderboards.'
                 },
                 {
-                    title: 'Performance tuning',
-                    body: 'Tightened indexes and read-model queries once real match volume and history exposed latency hotspots.'
+                    title: 'Platform API',
+                    body: 'Modeled portal sessions, scoped API keys, route policies, public reads, and curated integrator endpoints.'
                 }
             ],
             technicalChallenges: [
-                'Reconciling conflicting signals without losing traceability: grouping, inference, and evidence had to stay explainable for review and for future disputes.',
-                'Keeping read latency predictable as history and standings grew without turning every page into bespoke SQL.',
-                'Modeling permissions so operators could move fast in review workflows without creating foot-guns for production data.',
-                'Shipping schema and rule changes continuously while integrators depended on a stable published contract.'
+                'The hardest tracker problem was detecting new matches without a per-match feed. The worker had to compare normalized global totals between snapshots and infer candidate activity only when a new snapshot showed meaningful deltas.',
+                'The hardest platform problem was deciding when inferred activity becomes verified truth. StatForge has to correlate tracker candidates with expected matches, reports, linked identities, and staff review before publishing results to leaderboards or APIs.',
+                'Identity bridging is subtle. The system needs to connect Discord users, platform accounts, BF6 persona IDs, nucleus IDs, nicknames, and tracked entities without treating a temporary display name as the source of truth.',
+                'Data growth splits into two different problems: tracker snapshots grow quickly and need retention or archival, while platform match and review tables need stable indexes and aggregation paths for leaderboards.',
+                'Security boundaries matter because integrators, public users, operators, and internal services should not all see the same routes or raw tracker data.'
             ],
             links: [{ href: 'https://stat-forge.fiberhostingservices.com/', label: 'Live product (StatForge.gg)' }]
         }
