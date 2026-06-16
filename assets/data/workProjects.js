@@ -22,10 +22,10 @@ export const WORK_PROJECTS = [
         slug: 'statforge',
         featured: true,
         title: 'StatForge',
-        subtitle: 'Competitive gaming data platform for verified matches, leaderboards, and developer APIs',
+        subtitle: 'Verified match data, leaderboards, and developer APIs for competitive games',
         proofBadge: 'Platform',
         description:
-            'A competitive gaming data platform that reconciles raw tracker activity, scheduled events, reports, and operator review into canonical match records, verified leaderboards, public player pages, and scoped developer APIs.',
+            'Tracker data, scheduled events, reports, and operator review all feed one platform record. The system resolves player identity, detects candidate activity, verifies match results, and publishes leaderboards, player pages, and scoped API data.',
         icon: '📊',
         tech: [
             'Next.js',
@@ -45,21 +45,21 @@ export const WORK_PROJECTS = [
         screenshots: [statforgeLifecycleShot],
         caseStudy: {
             summary:
-                'StatForge is a competitive gaming data platform focused on creating authoritative player, team, and match data. It started with Battlefield 6 tracking, but the larger product is a platform that can reconcile multiple data sources into verified records, leaderboards, and developer APIs. The core idea is simple: raw game stats are useful, but they are not enough. StatForge separates ingestion, processing, validation, and presentation so tracker activity can become trusted platform data only after correlation and review.',
+                'StatForge is the platform layer around competitive game data. The public site shows players, matches, and leaderboards. The portal handles applications and API keys. Operators review candidate matches before results become official. The BF6 tracker is one input into that system. It resolves players through GameTools, polls stats over time, stores raw snapshots, and detects likely match activity from aggregate stat changes. That activity does not go straight to the public site. It goes through correlation and review first.',
             whatItIs:
-                'StatForge combines a public reference site, developer portal, platform API, operator review workflow, and BF6 tracker subsystem. Public users can view players, matches, and leaderboards. Integrators use scoped API keys to read curated platform data. Operators use the review surface to validate tracker candidates before they become canonical matches. The tracker subsystem resolves BF6 players by platform and nickname, polls GameTools for multiplayer stats, stores snapshot history, and detects likely new matches from aggregate stat changes.',
+                'There are two different kinds of data in the system: tracker data and verified platform data. Tracker data is raw and inferred. A worker polls GameTools, stores snapshots, hashes payloads to avoid duplicate rows, and looks for deltas in global stats. If matchesPlayed increases, that can become a candidate match. Verified platform data is the record users and integrators actually see. The platform API owns users, linked game identities, teams, tournaments, scrims, matches, match results, applications, API keys, scopes, and review state. Operators sit between those two layers. They review tracker candidates, compare them against expected matches and reports, and decide what becomes a canonical match record.',
             problem:
-                'External game stats are not tied cleanly to platform identity, and providers do not always expose direct match-ended events. A platform needs stable player identity, continuous polling, historical snapshots, inferred activity, expected-match correlation, staff validation, and a trusted final record. StatForge turns noisy and incomplete signals into verified match records that can power leaderboards, profiles, public pages, and developer APIs.',
-            lifecycleHeroTitle: 'From noisy inputs → one verified outcome',
+                'GameTools can tell me a player\'s current BF6 stats. It cannot tell me whether those stats belong to a verified match in StatForge, who reported the result, whether the match was scheduled, or whether the player identity is linked to a platform account. That missing context is the platform\'s job. The tracker collects evidence. The platform resolves identity, ties activity to expected matches, records review decisions, and publishes only the data that passed validation.',
+            lifecycleHeroTitle: 'Tracker evidence to verified records',
             lifecycleHeroSubtitle:
                 'The path from raw tracker activity to a reviewed record your integrations can trust.',
             differencePunchyLines: [
-                'StatForge is not just a stats tracker.',
-                'It is a reconciliation platform.',
-                'Raw game activity is incomplete.',
-                'Display names and identities drift.',
-                'Inferred matches need review before they become truth.',
-                'StatForge resolves identity, detects activity, validates candidates, and publishes canonical records your system can trust.'
+                'GameTools gives current stats.',
+                'The tracker stores evidence.',
+                'The platform owns verification.',
+                'Operators review candidates.',
+                'The API publishes canonical records.',
+                'Leaderboards only read from verified data.'
             ],
             pullQuote:
                 'The hardest platform problem was deciding when inferred activity becomes verified truth.',
@@ -78,7 +78,7 @@ export const WORK_PROJECTS = [
             diagramNote:
                 'Public and portal traffic goes through the platform API. The tracker is a subsystem for identity resolution, polling, snapshots, and candidate detection.',
             architectureIntro:
-                'StatForge splits raw tracker data from verified platform data. The tracker resolves players, polls GameTools, stores deduped snapshots, and infers candidate activity. The platform correlates those candidates with scheduled events, reports, linked identities, and operator review before publishing canonical match records, leaderboards, and API output.',
+                'Public pages, portal flows, and operator tools all go through the platform API. The tracker is not the product boundary. It is an internal subsystem that resolves players, polls GameTools, stores snapshots, and produces candidate activity for review. The platform owns the verified record. It decides which tracker candidates line up with scheduled events, reports, linked identities, and staff validation.',
             hideArchitectureBlock: true,
             architecture: `apps/web (Next.js)
 Reference site | Marketing | Portal | Operator review
@@ -97,38 +97,22 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
              PostgreSQL tracker DB
              tracked players, snapshots, detected matches`,
             stackNotes:
-                'The frontend is a Next.js app with marketing pages, public player and leaderboard views, a developer portal, and an operator review area. The ASP.NET platform API owns auth, RBAC, applications, API keys, scopes, canonical matches, leaderboards, and review actions. The tracker subsystem is separate: a Fastify API handles player resolve and latest snapshot reads, while a Node worker polls GameTools and writes time-series snapshots to PostgreSQL. MySQL stores platform users, game identity links, match records, review data, portal applications, API keys, and scopes. Platform routes use cookie sessions for portal users, scoped bearer keys for integrators, and route policy boundaries for customer-key, portal-only, and disabled routes.',
+                'apps/web is the Next.js frontend. It covers public player and leaderboard pages, marketing/reference pages, portal flows, and /app/review. platform-api is the ASP.NET API. It handles portal sessions, Discord and email/password auth, RBAC, applications, API keys, scopes, leaderboards, matches, review actions, and tracker read-through routes. The tracker service is separate. tracker-api is Fastify. It resolves players by platformId and platformNick, reads latest snapshots by personaId, and enrolls tracked players. tracker-poller is a Node worker that batches GameTools requests and writes snapshots to PostgreSQL. MySQL stores platform data: users, linked game identities, matches, match results, teams, tournaments, scrims, review records, portal applications, API keys, and scopes. API consumers, operators, and internal services do not all hit the same endpoints. The platform API exposes curated data while raw tracker data stays behind platform-mediated or internal routes.',
             personalBuild: [
-                'Designed the split between raw tracker data and verified platform data so inferred activity does not automatically become a published match.',
-                'Built the player resolve and polling path: identity cache, GameTools lookup, tracked player enrollment, batch polling, raw snapshot storage, hash-based dedupe, and latest snapshot reads.',
-                'Implemented match candidate detection from aggregate stat deltas when the provider does not emit direct match events.',
-                'Built the platform layer around canonical matches, match results, review candidates, linked game identities, leaderboards, portal applications, API keys, and scopes.',
-                'Shipped frontend surfaces across public reference pages, developer portal flows, and operator review.'
+                'Built the resolve path from platformId and platformNick to stable BF6 identity. The system caches GameTools results, stores persona and nucleus IDs, and enrolls resolved players for polling.',
+                'Built the poller path that reads enabled tracked players, batches GameTools stats requests, stores raw JSON snapshots, normalizes global fields, and dedupes identical payloads with a raw hash.',
+                'Built match candidate detection from aggregate stat deltas. Since there is no direct match-ended event, the worker compares snapshots and looks for meaningful changes like increased matches played.',
+                'Built the boundary between tracker candidates and verified platform records. A detected match is evidence, not truth.',
+                'Built platform data paths for linked identities, review candidates, canonical matches, match results, leaderboards, portal applications, API keys, and scopes.',
+                'Built frontend surfaces for public player pages, leaderboards, developer portal flows, and operator review.'
             ],
-            personalBuildCards: [
-                {
-                    title: 'Identity and polling',
-                    body: 'Built resolve, cache, enroll, poll, snapshot, and hash-dedupe paths around GameTools and stable BF6 persona IDs.'
-                },
-                {
-                    title: 'Event inference',
-                    body: 'Detected candidate matches from aggregate stat deltas when the upstream provider did not emit per-match events.'
-                },
-                {
-                    title: 'Review workflow',
-                    body: 'Separated tracker candidates from canonical matches so operators validate activity before it reaches leaderboards.'
-                },
-                {
-                    title: 'Platform API',
-                    body: 'Modeled portal sessions, scoped API keys, route policies, public reads, and curated integrator endpoints.'
-                }
-            ],
+            personalBuildCards: [],
             technicalChallenges: [
-                'The hardest tracker problem was detecting new matches without a per-match feed. The worker had to compare normalized global totals between snapshots and infer candidate activity only when a new snapshot showed meaningful deltas.',
-                'The hardest platform problem was deciding when inferred activity becomes verified truth. StatForge has to correlate tracker candidates with expected matches, reports, linked identities, and staff review before publishing results to leaderboards or APIs.',
-                'Identity bridging is subtle. The system needs to connect Discord users, platform accounts, BF6 persona IDs, nucleus IDs, nicknames, and tracked entities without treating a temporary display name as the source of truth.',
-                'Data growth splits into two different problems: tracker snapshots grow quickly and need retention or archival, while platform match and review tables need stable indexes and aggregation paths for leaderboards.',
-                'Security boundaries matter because integrators, public users, operators, and internal services should not all see the same routes or raw tracker data.'
+                'The tracker has to infer activity from totals. If matchesPlayed increases between snapshots, something happened, but the provider does not hand over a clean match object. The system has to treat that as a candidate, not a final result.',
+                'Display names are terrible identifiers because they change. The system tracks persona IDs, nucleus IDs, linked platform accounts, and user-game identity relationships instead of treating nicknames as the source of truth.',
+                'The review flow exists because detected data and verified data are different things. Operators need to compare tracker candidates with scheduled matches, reports, participants, and expected activity before publishing results.',
+                'Snapshot storage grows quickly. Raw JSON is useful for audit and debugging, but long-term reads need indexes, retention rules, normalized fields, and eventually aggregation.',
+                'Public users, API consumers, operators, and internal services need different boundaries. The platform API publishes canonical records; raw tracker internals stay out of the customer-facing contract.'
             ],
             links: [{ href: 'https://stat-forge.fiberhostingservices.com/', label: 'Live product (StatForge.gg)' }]
         }
