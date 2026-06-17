@@ -1,5 +1,5 @@
 /**
- * Premium "operator console" tokens — single accent + cyan support + depth layers.
+ * Premium "operator console" tokens - single accent + cyan support + depth layers.
  * Dark-first; light uses real surfaces (not flat white).
  */
 
@@ -32,7 +32,7 @@ export function consoleTokens(darkMode) {
             shadowCard: '0 10px 30px rgba(0, 0, 0, 0.35)',
             shadowLift: '0 20px 44px rgba(0, 0, 0, 0.45)',
             shadowAccent: '0 18px 42px rgba(79, 140, 255, 0.14)',
-            /** Primary CTA — depth without accent bloom */
+            /** Primary CTA - depth without accent bloom */
             shadowButtonPrimary: '0 2px 8px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.35)',
             diagramGlow: '0 0 48px rgba(79, 140, 255, 0.12), 0 16px 40px rgba(0, 0, 0, 0.4)'
         };
@@ -79,7 +79,7 @@ export function glassSurfaceStyle(darkMode, tokens) {
     };
 }
 
-/** Single consistent proof badge — accent tint, not rainbow categories. */
+/** Single consistent proof badge - accent tint, not rainbow categories. */
 export function proofBadgeStyle(darkMode, tokens) {
     const { accentRgb } = tokens;
     return darkMode

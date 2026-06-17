@@ -4,7 +4,7 @@
 
 /**
  * Remote thumbnail URL (thum.io). Fine for optional `<img src>` with `onError` handling;
- * avoid relying on it as the only hero art — prefer bundled assets via `new URL(..., import.meta.url)`.
+ * avoid relying on it as the only hero art - prefer bundled assets via `new URL(..., import.meta.url)`.
  */
 export function liveSitePreview(url) {
     if (!url) return '';
@@ -120,7 +120,7 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
     {
         slug: 'fiber-hosting',
         title: 'Fiber Hosting',
-        subtitle: 'Hosting control plane for websites, applications, and infrastructure',
+        subtitle: 'Hosting management platform for websites, deployments, domains, and infrastructure',
         proofBadge: 'Infrastructure',
         description:
             'A customer dashboard and control-plane API for requesting hosted sites, domains, FTP/SFTP access, backups, billing, support, and application deployments while automation handles the infrastructure changes.',
@@ -271,10 +271,10 @@ Postgres`,
     {
         slug: 'security-automation-platform',
         title: 'Hex Stop',
-        subtitle: 'Penetration testing workflow platform for scoped scans, validation, reports, and submissions',
+        subtitle: 'Security orchestration platform for vulnerability scanning, validation, reporting, and submission workflows',
         proofBadge: 'Security Automation',
         description:
-            'A security workflow platform where users submit authorized assets, scans run through queued Kubernetes jobs, findings move through validation, and reports wait for user approval before submission.',
+            'A security orchestration system where authorized assets become queued scanner jobs, findings move through validation, and reports wait for user approval before submission.',
         icon: '🛡️',
         tech: ['Python', 'PostgreSQL', 'Redis', 'Celery', 'Kubernetes', 'Nikto', 'ZAP', 'Trivy', 'Burp'],
         image: liveSitePreview('https://github.com/Mystshara/ptaas-security-demo'),

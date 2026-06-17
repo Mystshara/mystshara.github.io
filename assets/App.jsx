@@ -44,8 +44,8 @@ function HeroSection({ darkMode }) {
                             margin: '0 0 1rem'
                         }}
                     >
-                        I build production systems from Kubernetes infrastructure through SaaS platforms to security
-                        automation.
+                        I build data and infrastructure systems that move work from input to validation, automation, review,
+                        and reliable output.
                     </h1>
                     <p
                         style={{
@@ -67,8 +67,8 @@ function HeroSection({ darkMode }) {
                             maxWidth: '560px'
                         }}
                     >
-                        Systems and platform engineer, shipping automation, infrastructure, and product surfaces that have
-                        to survive real traffic, real users, and real incident response.
+                        Systems and platform engineer working across APIs, databases, queues, workers, dashboards, and
+                        infrastructure automation.
                     </p>
                     <div
                         className="hero-cta-row"

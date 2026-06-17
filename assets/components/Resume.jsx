@@ -147,7 +147,7 @@ function Resume({ darkMode = true }) {
                             }}
                         >
                             {c.label}
-                            <span style={{ color: muted, fontWeight: 500 }}> — {c.value}</span>
+                            <span style={{ color: muted, fontWeight: 500 }}> - {c.value}</span>
                         </a>
                     ))}
                 </nav>

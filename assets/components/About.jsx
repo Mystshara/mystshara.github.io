@@ -12,7 +12,7 @@ const TECH_GROUPS = [
 const PILLARS = [
     {
         title: 'Clear boundaries',
-        body: 'Systems designed to scale without turning into chaos: ownership, interfaces, and contracts that stay legible.',
+        body: 'Systems stay manageable when ownership, interfaces, and contracts are clear.',
         icon: '🧱'
     },
     {

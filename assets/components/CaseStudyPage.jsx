@@ -8,7 +8,7 @@ import SystemFlowDiagram from './SystemFlowDiagram';
 import StatForgeLifecycleDiagram from './StatForgeLifecycleDiagram';
 
 /**
- * @param {'prose' | 'column'} contentWidth — prose caps line length (~42rem). column matches full case-study width (cards, diagrams).
+ * @param {'prose' | 'column'} contentWidth - prose caps line length (~42rem). column matches full case-study width (cards, diagrams).
  */
 function Section({ title, children, darkMode, noBorder = false, contentWidth = 'prose' }) {
     const t = consoleTokens(darkMode);
