@@ -125,7 +125,7 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
         description:
             'A customer dashboard and control-plane API for requesting hosted sites, domains, FTP/SFTP access, backups, billing, support, and application deployments while automation handles the infrastructure changes.',
         icon: '⚡',
-        tech: ['Blazor Server', 'FastAPI', 'PostgreSQL', 'GitHub Actions', 'Terraform', 'Ansible', 'Kubernetes', 'Vault'],
+        tech: ['Blazor Server', 'FastAPI', 'PostgreSQL', 'DigitalOcean', 'GitHub Actions', 'Terraform', 'Ansible', 'Kubernetes', 'Vault'],
         image: fiberHostingHeroShot,
         demoLink: 'https://fiberhostingservices.com/',
         repoLink: 'https://github.com/Mystshara/web-game-hosting-demo',
@@ -136,11 +136,11 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
         ],
         caseStudy: {
             summary:
-                'Fiber Hosting is a hosting control plane. Customers use a dashboard instead of SSH sessions, Kubernetes manifests, DNS records, firewall rules, or manual server administration. The dashboard records what the customer wants, the API validates ownership and state, and infrastructure automation applies the change.',
+                'Fiber Hosting is the customer-facing hosting platform I built around accounts, websites, domains, FTP/SFTP users, backups, deployments, monitoring, billing, and support tickets. The dashboard is where customers manage hosting services. The control plane records those requests, checks ownership, and dispatches the infrastructure work.',
             whatItIs:
-                'There are three main layers: a Blazor Server dashboard, a FastAPI control-plane API, and an infrastructure automation layer. The dashboard handles user interaction. FastAPI owns authentication, authorization, product state, provisioning requests, billing records, support data, monitoring information, and infrastructure dispatch. Postgres stores customer accounts, product records, provisioning state, domains, backups, billing information, and dashboard data.',
+                'Customers create hosting accounts, add websites, connect domains, request FTP/SFTP access, check backups, open support tickets, view monitoring status, and manage billing from the dashboard. Behind that, a Blazor Server frontend keeps the customer session and UI state. FastAPI owns authentication, authorization, product state, provisioning requests, billing records, support data, monitoring information, and infrastructure dispatch. Postgres stores customer accounts, product records, provisioning state, domains, backups, billing information, and dashboard data.',
             problem:
-                'The difficult part is not serving web pages. The difficult part is coordinating infrastructure changes safely. Site creation, DNS updates, FTP provisioning, certificate issuance, storage creation, and deployment automation all take time and can fail partway through. The platform needs to track provisioning state, keep ownership boundaries intact, manage secrets, coordinate automation systems, and keep the dashboard in sync with the real environment.',
+                'The hard part is the lifecycle around a customer request. A site can be queued, partially provisioned, waiting on DNS, waiting on TLS, blocked on a failed deployment, or ready. FTP accounts, backups, domains, and application deployments have the same problem. The dashboard needs to show useful status without exposing the Terraform runs, host paths, credentials, or Kubernetes details underneath.',
             diagramTitle: 'Hosting control plane',
             diagramSteps: [
                 { title: 'Browser', detail: 'Customer dashboard' },
@@ -154,7 +154,7 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
             diagramNote:
                 'The API records intent and dispatches automation. Long-running infrastructure work happens outside the request path.',
             architectureIntro:
-                'When a user opens the dashboard, the browser connects to the Blazor Server frontend. Most component execution happens on the .NET server over a SignalR connection at /_blazor. Dashboard components call the FastAPI backend for data and actions. FastAPI authenticates the request, checks ownership, updates Postgres, and either returns immediately or queues infrastructure work.',
+                'A typical customer flow starts with an account, then a website, then a domain, then a deployment request. FastAPI records the request in Postgres, dispatches GitHub Actions, and automation runs Terraform and Ansible against DigitalOcean, Kubernetes, and virtual machines. Vault stores generated credentials. The dashboard polls status until the site, domain, FTP account, or deployment is ready.',
             hideArchitectureBlock: true,
             architecture: `Browser
    |
@@ -178,20 +178,20 @@ Control State          |
                        v
               Customer Workloads`,
             stackNotes:
-                'The control plane manages users, authentication, billing, domains, backups, support requests, product records, provisioning status, monitoring data, and infrastructure requests. The data plane contains hosted websites, application containers, Kubernetes deployments, services, ingresses, persistent storage, databases, FTP/SFTP users, DNS records, TLS certificates, and virtual machines. Terraform defines Kubernetes resources, ingress rules, storage, DNS records, hosting workloads, and tenant deployment resources. Ansible handles host setup, hardening, FTP users, database users, monitoring installation, and security tooling. Vault stores infrastructure credentials, FTP credentials, database credentials, API secrets, and deployment secrets.',
+                'The control plane manages users, billing, domains, backups, support requests, product records, provisioning status, monitoring data, and infrastructure requests. The data plane contains hosted websites, application containers, Kubernetes deployments, services, ingresses, persistent storage, databases, FTP/SFTP users, DNS records, TLS certificates, and virtual machines. Terraform defines the resources that should exist. Ansible handles host setup, hardening, FTP users, database users, monitoring installation, and operational tasks. Vault stores infrastructure credentials, FTP credentials, database credentials, API secrets, and deployment secrets.',
             personalBuild: [
-                'Built the dashboard and control-plane shape for hosted sites, domains, backups, billing, support, monitoring, FTP/SFTP access, and deployment actions.',
+                'Built dashboard flows for customer hosting accounts, hosted sites, domains, backups, billing, support tickets, monitoring, FTP/SFTP access, and deployment actions.',
                 'Built the FastAPI backend paths that validate ownership, update product state, create provisioning records, and dispatch infrastructure automation.',
                 'Built the asynchronous provisioning pattern with GitHub Actions, Terraform, and Ansible so infrastructure changes do not run inside API requests.',
-                'Built site provisioning flows for records, queued state, workflow dispatch, Kubernetes resources, DNS, TLS, storage, Vault secrets, and status updates.',
+                'Built site provisioning flows for queued records, workflow dispatch, DigitalOcean/Kubernetes resources, DNS, TLS, storage, Vault secrets, and status updates.',
                 'Built FTP/SFTP provisioning flows that create accounts, apply filesystem restrictions, generate credentials, store them in Vault, and return completion status to the dashboard.'
             ],
             technicalChallenges: [
                 'The API cannot block while infrastructure changes run. Provisioning has to create state, dispatch work, and let the dashboard poll status until the workflow finishes.',
-                'Customer-facing product state and infrastructure state have to stay separate. The dashboard should show progress without exposing Terraform details, secrets, host paths, or internal credentials.',
-                'Secrets cannot live in source code, container images, or dashboard state. Vault owns infrastructure credentials, FTP credentials, database credentials, API secrets, and deployment secrets.',
-                'Security spans several layers: bcrypt password hashing, JWT bearer authentication, HttpOnly cookies, token revocation, owner-scoped database filtering, CSP, HSTS, frame protections, Fail2Ban, UFW, Suricata, auditd, Kubernetes RBAC, and Kubernetes audit logging.',
-                'Some areas still need hardening before production use: consistent CSRF enforcement, standardized auth helpers, hashed API keys and reset tokens, stricter migrations, rate limiting, and more durable retry handling for provisioning state.'
+                'Customer state and infrastructure state can drift. The platform needs enough status tracking to know whether a site is queued, running, failed, waiting on DNS, waiting on TLS, or ready.',
+                'A failed deployment has to be recoverable. The same request may touch Postgres records, GitHub Actions, Terraform state, Ansible tasks, Vault credentials, DNS, storage, and Kubernetes resources.',
+                'Secrets cannot leak into dashboards, source code, container images, or deployment logs. Vault owns the generated credentials and the dashboard only gets the result it is allowed to show.',
+                'The main production hardening work is around consistent CSRF enforcement, standardized auth helpers, hashed API keys and reset tokens, stricter migrations, rate limiting, and more durable retry handling for provisioning state.'
             ],
             links: [
                 { href: 'https://fiberhostingservices.com', label: 'Live site' },
@@ -270,13 +270,13 @@ Postgres`,
     },
     {
         slug: 'security-automation-platform',
-        title: 'Security Automation Platform',
-        subtitle: 'PTaaS-style stack + vulnerability discovery pipelines',
+        title: 'Hex Stop',
+        subtitle: 'Penetration testing workflow platform for scoped scans, validation, reports, and submissions',
         proofBadge: 'Security Automation',
         description:
-            'One coherent security-engineering story: modular automation, policy-as-code, secrets discipline, and scanner orchestration, with a public reference implementation on GitHub.',
+            'A security workflow platform where users submit authorized assets, scans run through queued Kubernetes jobs, findings move through validation, and reports wait for user approval before submission.',
         icon: '🛡️',
-        tech: ['Kubernetes', 'Terraform', 'Vault', 'Trivy', 'ZAP', 'GitHub Actions', 'Python'],
+        tech: ['Python', 'PostgreSQL', 'Redis', 'Celery', 'Kubernetes', 'Nikto', 'ZAP', 'Trivy', 'Burp'],
         image: liveSitePreview('https://github.com/Mystshara/ptaas-security-demo'),
         demoLink: 'https://github.com/Mystshara/ptaas-security-demo',
         repoLink: 'https://github.com/Mystshara/ptaas-security-demo',
@@ -287,40 +287,62 @@ Postgres`,
         ],
         caseStudy: {
             summary:
-                'Bug-bounty style discovery and a PTaaS-style modular stack are the same engineering muscle: repeatable pipelines, safe secrets, and automation you can audit, merged here as one public platform narrative.',
+                'Hex Stop is a penetration testing workflow platform. A user submits assets they are authorized to test, the platform validates scope, schedules scanner workloads, collects findings, runs validation, generates reports, and supports controlled submission workflows.',
             whatItIs:
-                'A reference security automation platform demonstrating how vulnerability discovery workflows, infrastructure provisioning, and secrets management fit together as a maintainable system.',
+                'The system has four main pieces: a frontend dashboard, an API layer, a queue/orchestration layer, and scanner workloads. The dashboard is where users manage targets, scans, reports, and approvals. The API owns targets, scan records, compliance data, report state, authorization, and workflow transitions. Redis and Celery handle orchestration. Kubernetes runs scanner jobs for tools like Nikto, ZAP, Trivy, and Burp.',
             problem:
-                'Security tooling fails when it is a pile of scripts run by one person. Teams need reproducible environments, traceable changes, and integration points that match how engineering already ships software.',
-            architecture: `CI / GitHub Actions
-        │
-        ▼
-┌──────────────────────┐      ┌─────────────────┐
-│ build / test / scan │─────▶│ artifact + SBOM │
-└──────────┬──────────┘      └────────┬────────┘
-           │                          │
-           ▼                          ▼
-┌──────────────────────┐    ┌─────────────────────┐
-│ Kubernetes runtime   │    │ Vault (secrets)     │
-│ (deploy, policies)   │    │ (identity, leases)  │
-└──────────┬───────────┘    └─────────────────────┘
-           │
-           ▼
-┌──────────────────────┐
-│ scanners (Trivy/ZAP) │
-│ + orchestration      │
-└──────────────────────┘`,
+                'The hard part is not running a scanner command. The hard part is making scans repeatable, scoped, reviewable, and tied to user authorization. A platform has to know what assets a user is allowed to test, which scans are running, what findings came back, which findings were validated, what report was generated, and whether the user approved submission.',
+            diagramTitle: 'Penetration testing workflow',
+            diagramSteps: [
+                { title: 'User', detail: 'Authorized asset owner' },
+                { title: 'Dashboard', detail: 'Targets, scans, reports' },
+                { title: 'API', detail: 'Scope, auth, workflow state' },
+                { title: 'Postgres', detail: 'Targets, scans, reports' },
+                { title: 'Redis', detail: 'Queue events' },
+                { title: 'Celery', detail: 'Scanner orchestration' },
+                { title: 'Kubernetes', detail: 'Scanner jobs' },
+                { title: 'Validation', detail: 'Findings to reports' },
+                { title: 'Approval', detail: 'Controlled submission' }
+            ],
+            diagramNote:
+                'Users do not run scanners directly. The platform records scope, queues work, runs scanners in Kubernetes, validates findings, and keeps report submission behind approval.',
+            architectureIntro:
+                'The dashboard sends scan requests to the API. The API stores targets, scan records, report state, and compliance data in Postgres, then publishes work to Redis. Celery workers consume those jobs and start Kubernetes scanner workloads. Nikto, ZAP, Trivy, and Burp produce findings. Findings pass through validation before reports are generated and shown for user approval.',
+            hideArchitectureBlock: true,
+            architecture: `flowchart LR
+    User --> Dashboard
+    Dashboard --> API
+    API --> Postgres
+    API --> Redis
+    Redis --> Celery
+    Celery --> Kubernetes
+    Kubernetes --> Nikto
+    Kubernetes --> ZAP
+    Kubernetes --> Trivy
+    Kubernetes --> Burp
+    Nikto --> Findings
+    ZAP --> Findings
+    Trivy --> Findings
+    Burp --> Findings
+    Findings --> Validation
+    Validation --> Reports
+    Reports --> UserApproval
+    UserApproval --> Submission`,
             stackNotes:
-                'Terraform for infrastructure as code, Kubernetes as execution substrate, Vault for secrets and identity-aware access, CI/CD for gates, and scanners orchestrated as first-class jobs, not manual clicks.',
+                'Postgres stores targets, scan runs, findings, reports, compliance data, and workflow status. Redis carries scan events. Celery coordinates scanner execution and result processing. Kubernetes provides isolated jobs for scanners instead of running tools inside the API process. Nikto, ZAP, Trivy, and Burp cover different parts of the testing workflow, from web checks to dependency and container findings.',
             personalBuild: [
-                'Consolidated “PTaaS demo” and bug-bounty automation narratives into one modular layout so the repo reads as a platform, not a one-off.',
-                'Implemented pipeline patterns that separate build-time and runtime security signals.',
-                'Emphasized least-privilege flows and secret lifecycle patterns that survive scrutiny beyond a README screenshot.'
+                'Built the platform shape around targets, scans, findings, reports, user approval, and submission workflow instead of treating scans as one-off scripts.',
+                'Built the queue path from API requests to Redis events, Celery orchestration, Kubernetes scanner jobs, and result processing.',
+                'Built scanner workflow boundaries so Nikto, ZAP, Trivy, and Burp can run as separate workloads and return findings into a shared validation path.',
+                'Built report workflow concepts around validated findings, generated reports, user approval, and controlled submission.',
+                'Modeled production gaps explicitly: auth boundaries, scope validation, scanner isolation, durable jobs, retry handling, and report integrity.'
             ],
             technicalChallenges: [
-                'Keeping scanner orchestration reliable across flaky targets and rate limits.',
-                'Making Terraform + Kubernetes boundaries clear so changes remain reviewable as the stack grows.',
-                'Documenting threat models and trade-offs honestly: reference architectures should teach, not market.'
+                'Scanners are noisy and targets are unreliable. Jobs need timeouts, retries, logs, and clear failure states so one bad target does not block the queue.',
+                'Authorization matters before any scan starts. The platform has to know that a user is allowed to test an asset before work reaches Kubernetes.',
+                'Scanner output is not the same thing as a validated finding. The validation step has to reduce duplicates, flag false positives, preserve evidence, and keep enough context for a report.',
+                'Reports need a controlled handoff. A user should review findings before anything is submitted or shared outside the platform.',
+                'The production gaps are mostly around hardening: stronger auth, rate limits, tenant isolation, durable job tracking, scanner sandboxing, secret handling, and audit trails.'
             ],
             links: [{ href: 'https://github.com/Mystshara/ptaas-security-demo', label: 'GitHub reference' }]
         }
