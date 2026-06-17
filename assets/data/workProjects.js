@@ -120,12 +120,12 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
     {
         slug: 'fiber-hosting',
         title: 'Fiber Hosting',
-        subtitle: 'Self-hosted cloud & hosting platform',
+        subtitle: 'Hosting control plane for websites, applications, and infrastructure',
         proofBadge: 'Infrastructure',
         description:
-            'Control-plane thinking on real metal and clusters: provisioning, networking edges, and operational guardrails for customer-facing hosting workloads.',
+            'A customer dashboard and control-plane API for requesting hosted sites, domains, FTP/SFTP access, backups, billing, support, and application deployments while automation handles the infrastructure changes.',
         icon: '⚡',
-        tech: ['Proxmox', 'Kubernetes', 'Docker', 'NGINX', 'Terraform', 'Linux'],
+        tech: ['Blazor Server', 'FastAPI', 'PostgreSQL', 'GitHub Actions', 'Terraform', 'Ansible', 'Kubernetes', 'Vault'],
         image: fiberHostingHeroShot,
         demoLink: 'https://fiberhostingservices.com/',
         repoLink: 'https://github.com/Mystshara/web-game-hosting-demo',
@@ -136,37 +136,62 @@ Auth | RBAC | Apps and keys | Matches | Leaderboards | Review
         ],
         caseStudy: {
             summary:
-                'Fiber Hosting is the strongest public infrastructure story: turning “servers and clusters” into a repeatable platform customers can depend on.',
+                'Fiber Hosting is a hosting control plane. Customers use a dashboard instead of SSH sessions, Kubernetes manifests, DNS records, firewall rules, or manual server administration. The dashboard records what the customer wants, the API validates ownership and state, and infrastructure automation applies the change.',
             whatItIs:
-                'A hosting and edge platform spanning self-hosted virtualization (Proxmox) and Kubernetes-backed services, with emphasis on provisioning flows, network ingress, and day-2 operations.',
+                'There are three main layers: a Blazor Server dashboard, a FastAPI control-plane API, and an infrastructure automation layer. The dashboard handles user interaction. FastAPI owns authentication, authorization, product state, provisioning requests, billing records, support data, monitoring information, and infrastructure dispatch. Postgres stores customer accounts, product records, provisioning state, domains, backups, billing information, and dashboard data.',
             problem:
-                'Hosting products fail in boring ways: flaky provisioning, unclear networking paths, and upgrades that require heroics. The goal is predictable lifecycle operations at scale, not a demo cluster.',
-            architecture: `Customers / edge traffic
-        │
-        ▼
-┌──────────────┐      ┌─────────────────────┐
-│ NGINX / TLS  │─────▶│ app + game workloads │
-└──────┬───────┘      └──────────┬──────────┘
-       │                         │
-       ▼                         ▼
-┌──────────────┐      ┌─────────────────────┐
-│ Proxmox      │      │ Kubernetes          │
-│ (metal/VM)   │      │ (scheduling, rollouts)│
-└──────────────┘      └─────────────────────┘
-        │                         │
-        └──────── Terraform / automation ───────┘`,
+                'The difficult part is not serving web pages. The difficult part is coordinating infrastructure changes safely. Site creation, DNS updates, FTP provisioning, certificate issuance, storage creation, and deployment automation all take time and can fail partway through. The platform needs to track provisioning state, keep ownership boundaries intact, manage secrets, coordinate automation systems, and keep the dashboard in sync with the real environment.',
+            diagramTitle: 'Hosting control plane',
+            diagramSteps: [
+                { title: 'Browser', detail: 'Customer dashboard' },
+                { title: 'Blazor Server', detail: 'SignalR UI session' },
+                { title: 'FastAPI', detail: 'Auth, state, dispatch' },
+                { title: 'Postgres', detail: 'Control-plane state' },
+                { title: 'GitHub Actions', detail: 'Async workflows' },
+                { title: 'Terraform / Ansible', detail: 'Provision and configure' },
+                { title: 'Kubernetes / VMs', detail: 'Customer workloads' }
+            ],
+            diagramNote:
+                'The API records intent and dispatches automation. Long-running infrastructure work happens outside the request path.',
+            architectureIntro:
+                'When a user opens the dashboard, the browser connects to the Blazor Server frontend. Most component execution happens on the .NET server over a SignalR connection at /_blazor. Dashboard components call the FastAPI backend for data and actions. FastAPI authenticates the request, checks ownership, updates Postgres, and either returns immediately or queues infrastructure work.',
+            hideArchitectureBlock: true,
+            architecture: `Browser
+   |
+   v
+Blazor Server Dashboard
+   |
+   v
+FastAPI Control Plane
+   |
+   +------------------+
+   |                  |
+   v                  v
+Postgres           GitHub Actions
+Control State          |
+                       v
+              Terraform / Ansible
+                       |
+                       v
+          Kubernetes / Virtual Machines
+                       |
+                       v
+              Customer Workloads`,
             stackNotes:
-                'Proxmox for bare-metal/VM foundations, Kubernetes for orchestration, Docker images as the portable unit of delivery, NGINX at the edge, Terraform for reproducible infrastructure, and Linux primitives done correctly (systemd, cgroups, observability hooks).',
+                'The control plane manages users, authentication, billing, domains, backups, support requests, product records, provisioning status, monitoring data, and infrastructure requests. The data plane contains hosted websites, application containers, Kubernetes deployments, services, ingresses, persistent storage, databases, FTP/SFTP users, DNS records, TLS certificates, and virtual machines. Terraform defines Kubernetes resources, ingress rules, storage, DNS records, hosting workloads, and tenant deployment resources. Ansible handles host setup, hardening, FTP users, database users, monitoring installation, and security tooling. Vault stores infrastructure credentials, FTP credentials, database credentials, API secrets, and deployment secrets.',
             personalBuild: [
-                'Designed provisioning flows so new capacity could join the fleet without manual snowflake steps.',
-                'Hardened ingress/TLS termination patterns and documented failure modes operators actually hit.',
-                'Built automation that treated infrastructure like software: reviewable changes, rollbacks, and drift detection where possible.',
-                'Operationalized upgrades with canaries and clear health checks, not “restart and hope.”'
+                'Built the dashboard and control-plane shape for hosted sites, domains, backups, billing, support, monitoring, FTP/SFTP access, and deployment actions.',
+                'Built the FastAPI backend paths that validate ownership, update product state, create provisioning records, and dispatch infrastructure automation.',
+                'Built the asynchronous provisioning pattern with GitHub Actions, Terraform, and Ansible so infrastructure changes do not run inside API requests.',
+                'Built site provisioning flows for records, queued state, workflow dispatch, Kubernetes resources, DNS, TLS, storage, Vault secrets, and status updates.',
+                'Built FTP/SFTP provisioning flows that create accounts, apply filesystem restrictions, generate credentials, store them in Vault, and return completion status to the dashboard.'
             ],
             technicalChallenges: [
-                'Bridging Proxmox-era networking assumptions with Kubernetes networking without creating blind spots.',
-                'Keeping provisioning idempotent when hardware and hypervisors disagree in subtle ways.',
-                'Balancing customer self-service with guardrails that prevent catastrophic misconfiguration.'
+                'The API cannot block while infrastructure changes run. Provisioning has to create state, dispatch work, and let the dashboard poll status until the workflow finishes.',
+                'Customer-facing product state and infrastructure state have to stay separate. The dashboard should show progress without exposing Terraform details, secrets, host paths, or internal credentials.',
+                'Secrets cannot live in source code, container images, or dashboard state. Vault owns infrastructure credentials, FTP credentials, database credentials, API secrets, and deployment secrets.',
+                'Security spans several layers: bcrypt password hashing, JWT bearer authentication, HttpOnly cookies, token revocation, owner-scoped database filtering, CSP, HSTS, frame protections, Fail2Ban, UFW, Suricata, auditd, Kubernetes RBAC, and Kubernetes audit logging.',
+                'Some areas still need hardening before production use: consistent CSRF enforcement, standardized auth helpers, hashed API keys and reset tokens, stricter migrations, rate limiting, and more durable retry handling for provisioning state.'
             ],
             links: [
                 { href: 'https://fiberhostingservices.com', label: 'Live site' },
